@@ -1,10 +1,8 @@
 package com.example.GestionHotelera.model;
 
-import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,15 +14,15 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class Direccion {  
+public class PosicionFiscal {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private String calle;
-  private int numero;
-  @OneToMany(mappedBy = "direccion", cascade = jakarta.persistence.CascadeType.ALL)
-  private List<Huesped> huespedes;
-  @OneToOne(optional = true)
-  @JoinColumn(name = "departamento_id", referencedColumnName = "id")
-  private Departamento departamento;
+  private String ocupacion;
+  private String posicionIVA;
+  private int CUIT;
+  private boolean responsableDePago;
+  @OneToOne
+  @JoinColumn(name = "huesped_id", referencedColumnName = "id")
+  private Huesped huesped;
 }

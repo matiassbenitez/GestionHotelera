@@ -5,14 +5,70 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text=${title}></title>
   <script th:src="@{/index.js}"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
 <body>
-  <h1>Hola</h1>
+  <h1>INGRESAR DATOS DEL NUEVO HUESPED</h1>
   <form action="">
-    <input type="email" name="" id="">
-    <input type="date" name="" id="" placeholder="dd/mm/aaaa">
+    <div class="form-group">
+      <label for="apellido">Apellido*</label>
+      <input class="form-control-sm" type="text" name="apellido" id="apellido" placeholder="Apellido">
+      <label for="nombres">Nombres*</label>
+      <input class="form-control-sm" type="text" name="nombres" id="nombres" placeholder="Nombres">
+      <label for="fecha-nac">Fecha de nacimiento*</label>
+      <input class="" type="date" name="fecha-nac" id="fecha-nac">
+    </div>
+    <div class="form-group">
+      <label for="tipo-doc">Tipo de documento</label>
+      <select class="form-control-sm" name="tipo-doc" id="tipo-doc">
+        <option selected value="dni">DNI</option>
+        <option value="pasaporte">Pasaporte</option>
+        <option value="lc">LC</option>
+        <option value="le">LE</option>
+        <option value="otro">Otro</option>
+      </select>
+      <label for="nro-doc">Numero de documento*</label>
+      <input class="form-control-sm" type="number" name="nro-doc" id="nro-doc" placeholder="99.999.999">
+      <label for="nacionalidad">Nacionalidad*</label>
+      <input class="form-control-sm" type="text" name="nacionalidad" id="nacionalidad" placeholder="Nacionalidad">
+    </div>
+    <label for="calle">Dirección*</label>
+    <input class="form-control-sm" type="text" name="calle" id="calle" placeholder="Calle(*)">
+    <label for="nro-calle">Número*</label>
+    <input class="form-control-sm" type="number" name="nro-calle" id="nro-calle" placeholder="Número(*)">
+    <label for="depto">Departamento</label>
+    <input class="form-control-sm" type="text" name="depto" id="depto" placeholder="Departamento">
+    <label for="piso">Piso</label> 
+    <input class="form-control-sm" type="number" name="piso" id="piso" placeholder="Piso">
+    <label for="pais">País*</label>
+    <input class="form-control-sm" type="text" name="pais" id="pais" placeholder="País">
+    <label for="provincia">Provincia*</label>
+    <input class="form-control-sm" type="text" name="provincia" id="provincia" placeholder="Provincia">
+    <label for="localidad">Localidad*</label>
+    <label class="form-control-sm" for="codigo-postal">Código postal*</label>
+    <input type="number" name="codigo-postal" id="codigo-postal" placeholder="Código postal">
+    <input class="form-control-sm" type="text" name="localidad" id="localidad" placeholder="Localidad">
+    <label for="telefono">Teléfono</label>
+    <select class="form-control-sm" name="prefijo" id="prefijo">
+      <option value="54" selected >+54</option>
+    </select>
+    <input class="form-control-sm" type="text" name="telefono" id="telefono" placeholder="Teléfono">
+    <label for="email">Email</label>
+    <input class="form-control-sm" type="email" name="email" id="email" placeholder="Email">
+    <label for="ocupacion">Ocupación*</label>
+    <input class="form-control-sm" type="text" name="ocupacion" id="ocupacion" placeholder="Ocupación">
+    <label for="posicion-iva">Posición frente al IVA*</label>
+    <select class="form-control-sm" name="posicion-iva" id="posicion-iva">
+      <option value="consumidor-final" selected>Consumidor Final</option>
+      <option selected value="responsable-inscripto">Responsable Inscripto</option>
+      <option value="monotributista">Monotributista</option>
+      <option value="exento">Exento</option>
+    </select>
+    <label for="cuit">C.U.I.T.</label>
+    <input class="form-control-sm" type="text" name="cuit" id="cuit" placeholder="99-.99.999.999-9">
   </form>
   <div id="falta-nombre" class="Hola" hidden>Debe ingresar el nombre</div>
-  <button id="boton">apretar</button>
+  <button id="boton" class="btn btn-primary">apretar</button>
 </body>
 </html>
