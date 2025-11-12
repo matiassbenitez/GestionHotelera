@@ -19,44 +19,31 @@ import com.example.GestionHotelera.repository.PosicionFiscalDAO;
 public class GestionHuesped {
   
   private final HuespedDAO huespedDAO;
-  private final ContactoDAO contactoDAO;
-  private final UbicacionDAO ubicacionDAO;
-  private final DepartamentoDAO departamentoDAO;
-  private final PosicionFiscalDAO posicionFiscalDAO;
   private final DireccionDAO direccionDAO;
-  public GestionHuesped(HuespedDAO huespedDAO, ContactoDAO contactoDAO, UbicacionDAO ubicacionDAO,
-      DepartamentoDAO departamentoDAO, PosicionFiscalDAO posicionFiscalDAO, DireccionDAO direccionDAO) {
+  //private final ContactoDAO contactoDAO;
+  //private final UbicacionDAO ubicacionDAO;
+ // private final DepartamentoDAO departamentoDAO;
+  //private final PosicionFiscalDAO posicionFiscalDAO;
+
+  public GestionHuesped(HuespedDAO huespedDAO, DireccionDAO direccionDAO) {
     this.huespedDAO = huespedDAO;
-    this.contactoDAO = contactoDAO;
-    this.ubicacionDAO = ubicacionDAO;
-    this.departamentoDAO = departamentoDAO;
-    this.posicionFiscalDAO = posicionFiscalDAO;
     this.direccionDAO = direccionDAO;
   }
 
   public List<Huesped> listarHuespedes() {
     return huespedDAO.findAll();
   }
+
+  public java.util.Optional<Huesped> buscarPorNroDocumento(int nroDocumento) {
+    return huespedDAO.findByNroDocumento(nroDocumento);
+  }
+
   public Huesped darDeAltaHuesped(Huesped huesped) {
-    if (huesped.getContacto() != null) {
-      Contacto contactoGuardado = contactoDAO.save(huesped.getContacto());
-      huesped.setContacto(contactoGuardado);
-    }
-    if (huesped.getUbicacion() != null) {
-      Ubicacion ubicacionGuardada = ubicacionDAO.save(huesped.getUbicacion());
-      huesped.setUbicacion(ubicacionGuardada);
-    }
-    if (huesped.getPosicionFiscal() != null) {
-      PosicionFiscal posicionFiscalGuardada = posicionFiscalDAO.save(huesped.getPosicionFiscal());
-      huesped.setPosicionFiscal(posicionFiscalGuardada);
-    }
+   
+    
     if (huesped.getDireccion() != null) {
       Direccion direccionGuardada = direccionDAO.save(huesped.getDireccion());
       huesped.setDireccion(direccionGuardada);
-      if (huesped.getDireccion().getDepartamento() != null) {
-        Departamento departamentoGuardado = departamentoDAO.save(huesped.getDireccion().getDepartamento());
-        huesped.getDireccion().setDepartamento(departamentoGuardado);
-      }
     }
     return huespedDAO.save(huesped);
   }

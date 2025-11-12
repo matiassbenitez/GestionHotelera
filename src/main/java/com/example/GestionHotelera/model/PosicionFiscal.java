@@ -22,7 +22,7 @@ public class PosicionFiscal {
   private String posicionIVA;
   private int CUIT;
   private boolean responsableDePago;
-  @OneToOne
-  @JoinColumn(name = "huesped_id", referencedColumnName = "id")
+  @OneToOne(mappedBy = "posicionFiscal")
+  //@JoinColumn(name = "huesped_id", referencedColumnName = "id")
   private Huesped huesped;
 }

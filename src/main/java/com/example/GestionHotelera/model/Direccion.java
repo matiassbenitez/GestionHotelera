@@ -22,8 +22,10 @@ public class Direccion {
   private Long id;
   private String calle;
   private int numero;
-  @OneToMany(mappedBy = "direccion", cascade = jakarta.persistence.CascadeType.ALL)
+
+  @OneToMany(mappedBy = "direccion")
   private List<Huesped> huespedes;
+
   @OneToOne(optional = true)
   @JoinColumn(name = "departamento_id", referencedColumnName = "id")
   private Departamento departamento;

@@ -20,7 +20,7 @@ public class Contacto {
   private Long id;
   private int telefono;
   private String email;
-  @OneToOne
-  @JoinColumn(name = "huesped_id", referencedColumnName = "id")
+  @OneToOne(mappedBy = "contacto")
+  //@JoinColumn(name = "huesped_id", referencedColumnName = "id")
   private Huesped huesped;
 }

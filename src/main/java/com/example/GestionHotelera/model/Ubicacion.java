@@ -22,7 +22,7 @@ public class Ubicacion {
   private String provincia;
   private String localidad;
   private String codPostal;
-  @OneToOne
-  @JoinColumn(name = "huesped_id", referencedColumnName = "id")
+  @OneToOne(mappedBy = "ubicacion")
+  //@JoinColumn(name = "huesped_id", referencedColumnName = "id")
   private Huesped huesped;
 }
