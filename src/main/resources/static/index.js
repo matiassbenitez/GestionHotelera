@@ -1,17 +1,29 @@
 document.addEventListener('DOMContentLoaded', function () {
   const forms = document.getElementById('formulario');
   const cancelar = document.getElementById('cancelar');
-
+  const modalSeguro = document.getElementById('modal-seguro');
+  
   cancelar.addEventListener('click', function () {
-    forms.reset();
-    const errores = document.getElementById('errores');
-    errores.innerHTML = '';
+    modalSeguro.style.display = 'block';
+    const buttonCancelarSi = document.getElementById('button-cancelar-si');
+    buttonCancelarSi.addEventListener('click', function () {
+      forms.reset();
+      const errores = document.getElementById('errores');
+      errores.innerHTML = '';
+      modalSeguro.style.display = 'none';
+    }
+    );
+    const buttonCancelarNo = document.getElementById('button-cancelar-no');
+    buttonCancelarNo.addEventListener('click', function () {
+      modalSeguro.style.display = 'none';
+    }
+    );
   });
 
   forms.addEventListener('submit', function (event) {
     console.log('Formulario enviado');
     const apellido = document.getElementById('apellido');
-    const nombres = document.getElementById('nombres');
+    const nombre = document.getElementById('nombre');
     //const tipoDoc = document.getElementById('tipo-doc');
     const nroDoc = document.getElementById('nro-doc');
     const fechaNac = document.getElementById('fecha-nac');
@@ -29,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const errorFormato = document.getElementById('error-formato');
     let hayError = false;
     errores.innerHTML = '';
-    event.preventDefault();
     
 
     if (!apellido.value.trim()) {
@@ -43,17 +54,17 @@ document.addEventListener('DOMContentLoaded', function () {
       apellido.classList.remove('campo-error');
     }
 
-    if (!nombres.value.trim()) {
+    if (!nombre.value.trim()) {
       const faltaNombres = document.createElement('li');
       faltaNombres.textContent = 'El campo Nombres es obligatorio.';
       errores.appendChild(faltaNombres);
       if (!hayError) {
-        nombres.focus();
-        nombres.classList.add('campo-error');
+        nombre.focus();
+        nombre.classList.add('campo-error');
         hayError = true;
       }
     } else {
-      nombres.classList.remove('campo-error');
+      nombre.classList.remove('campo-error');
     }
     const reGexFecha = /^\d{4}-\d{2}-\d{2}$/;
     if (!fechaNac.value) {
@@ -255,4 +266,5 @@ document.addEventListener('DOMContentLoaded', function () {
       console.log('Errores en el formulario, no se envía.');
     }
   });
+
 });

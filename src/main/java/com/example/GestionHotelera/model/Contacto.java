@@ -18,7 +18,7 @@ public class Contacto {
   @Id
   @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
   private Long id;
-  private int telefono;
+  private String telefono;
   private String email;
   @OneToOne(mappedBy = "contacto")
   //@JoinColumn(name = "huesped_id", referencedColumnName = "id")

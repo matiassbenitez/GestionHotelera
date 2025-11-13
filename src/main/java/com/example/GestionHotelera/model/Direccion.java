@@ -8,6 +8,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.CascadeType;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +27,7 @@ public class Direccion {
   @OneToMany(mappedBy = "direccion")
   private List<Huesped> huespedes;
 
-  @OneToOne(optional = true)
+  @OneToOne(optional = true,cascade = CascadeType.PERSIST)
   @JoinColumn(name = "departamento_id", referencedColumnName = "id")
   private Departamento departamento;
 }

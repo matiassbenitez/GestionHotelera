@@ -16,6 +16,7 @@ import java.util.Optional;
 @Controller
 public class VistaController {
   private final GestionHuesped gestionHuesped;
+
   public VistaController(GestionHuesped gestionHuesped) {
     this.gestionHuesped = gestionHuesped;
   }
@@ -29,11 +30,16 @@ public class VistaController {
   public String crearHuesped(@ModelAttribute HuespedDTO nuevoHuespedDTO,Model model) {
     Optional<Huesped> huespedEncontrado = gestionHuesped.buscarPorNroDocumento(nuevoHuespedDTO.getNroDocumento());
     if (huespedEncontrado.isPresent()) {
-      model.addAttribute("error", "El huésped con el número de documento " + nuevoHuespedDTO.getNroDocumento() + " ya existe.");
-
+      model.addAttribute("error", "¡CUIDADO! El tipo y número de documento ya existen en el sistema.");
+      model.addAttribute("title", "Dar de alta Huesped");
+      model.addAttribute("huespedDTO", nuevoHuespedDTO);
+      System.out.println("El huésped con el número de documento " + nuevoHuespedDTO.getNroDocumento() + " ya existe.");
       return "index";
-    return "redirect:/";
+    }
+    //return "redirect:/";
+    gestionHuesped.darDeAltaHuesped(nuevoHuespedDTO);
+    model.addAttribute("success", "El huésped " + nuevoHuespedDTO.getNombre() + " " + nuevoHuespedDTO.getApellido() + " ha sido satisfactoriamente cargado al sistema. ¿Desea cargar otro?");
+    return "index";
   }
-  
 }
 

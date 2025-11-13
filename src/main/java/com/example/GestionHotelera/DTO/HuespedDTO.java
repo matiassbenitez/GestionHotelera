@@ -14,20 +14,20 @@ import lombok.Setter;
 @Getter
 @Setter
 public class HuespedDTO {
+  private String nombre;
   private String apellido;
-  private String nombres;
-  private Date fechaNacimiento;
   private String tipoDocumento;
   private Integer nroDocumento;
+  private Date fechaNac;
   private String nacionalidad;
   private String calle;
-  private String nroCalle;
+  private int numero;
   private String departamento;
-  private Integer piso;
-  private String pais;
-  private String provincia;
+  private int piso;
   private String localidad;
-  private Integer codigoPostal;
+  private String provincia;
+  private String pais;
+  private String codPostal;
   private String prefijo;
   private String telefono;
   private String email;

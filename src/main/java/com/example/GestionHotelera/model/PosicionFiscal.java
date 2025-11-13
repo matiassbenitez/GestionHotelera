@@ -20,8 +20,8 @@ public class PosicionFiscal {
   private Long id;
   private String ocupacion;
   private String posicionIVA;
-  private int CUIT;
-  private boolean responsableDePago;
+  private String cuit;
+  private boolean responsableDePago = false;
   @OneToOne(mappedBy = "posicionFiscal")
   //@JoinColumn(name = "huesped_id", referencedColumnName = "id")
   private Huesped huesped;
