@@ -14,14 +14,6 @@ import com.example.GestionHotelera.model.Contacto;
 import com.example.GestionHotelera.model.PosicionFiscal;
 import com.example.GestionHotelera.repository.HuespedDAO;
 import com.example.GestionHotelera.repository.DireccionDAO;
-// import com.example.GestionHotelera.model.Contacto;
-// import com.example.GestionHotelera.model.Departamento;
-// import com.example.GestionHotelera.model.PosicionFiscal;
-// import com.example.GestionHotelera.model.Ubicacion;
-// import com.example.GestionHotelera.repository.ContactoDAO;
-// import com.example.GestionHotelera.repository.UbicacionDAO;
-// import com.example.GestionHotelera.repository.DepartamentoDAO;
-// import com.example.GestionHotelera.repository.PosicionFiscalDAO;
 
 @Service
 public class GestionHuesped {
@@ -29,10 +21,6 @@ public class GestionHuesped {
   private final HuespedDAO huespedDAOImpl;
   private final DireccionDAO direccionDAOImpl;
   private final GestionDireccion gestionDireccion;
-  //private final ContactoDAO contactoDAO;
-  //private final UbicacionDAO ubicacionDAO;
- // private final DepartamentoDAO departamentoDAO;
-  //private final PosicionFiscalDAO posicionFiscalDAO;
 
   public GestionHuesped(HuespedDAO huespedDAO, DireccionDAO direccionDAO, GestionDireccion gestionDireccion) {
     this.huespedDAOImpl = huespedDAO;
@@ -61,7 +49,7 @@ public class GestionHuesped {
     Optional<Direccion> direccionExistente = 
       gestionDireccion.buscarDireccion(nuevoHuespedDTO.getCalle(), nuevoHuespedDTO.getNumero(), nuevoHuespedDTO.getDepartamento(), nuevoHuespedDTO.getPiso());
     if (!direccionExistente.isPresent()) {
-      Direccion direccion = new Direccion(); //corroborar que no exista ya esa direccion
+      Direccion direccion = new Direccion();
       direccion.setCalle(nuevoHuespedDTO.getCalle());
       direccion.setNumero(nuevoHuespedDTO.getNumero());
 

@@ -3,7 +3,6 @@ package com.example.GestionHotelera.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.Getter;
@@ -21,6 +20,5 @@ public class Contacto {
   private String telefono;
   private String email;
   @OneToOne(mappedBy = "contacto")
-  //@JoinColumn(name = "huesped_id", referencedColumnName = "id")
   private Huesped huesped;
 }

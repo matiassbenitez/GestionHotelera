@@ -21,9 +21,9 @@ public class HuespedDTO {
   private Date fechaNac;
   private String nacionalidad;
   private String calle;
-  private int numero;
+  private Integer numero;
   private String departamento;
-  private int piso;
+  private Integer piso;
   private String localidad;
   private String provincia;
   private String pais;
