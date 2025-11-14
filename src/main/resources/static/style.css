@@ -14,7 +14,7 @@ input:focus {
     box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
 }
 
-.modal{
+.simple-modal{
     position: fixed; 
     z-index: 1; 
     left: 50%;

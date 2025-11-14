@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const forms = document.getElementById('formulario');
   const cancelar = document.getElementById('cancelar');
   const modalSeguro = document.getElementById('modal-seguro');
+  //const botonAceptar = document.getElementById('button-aceptar');
+  const modalError = document.getElementById('modal-error');
+  const modalSuccess = document.getElementById('modal-success');
   
   cancelar.addEventListener('click', function () {
     modalSeguro.style.display = 'block';
@@ -11,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const errores = document.getElementById('errores');
       errores.innerHTML = '';
       modalSeguro.style.display = 'none';
+      
     }
     );
     const buttonCancelarNo = document.getElementById('button-cancelar-no');
@@ -19,6 +23,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     );
   });
+
+  // botonAceptar.addEventListener('click', function () {
+  //   forms.action = '/crear-huesped?forzar=true';
+  //   forms.submit();
+  // }
+  // );
+
+
+  // let huespedDTO = crearDtoHuesped();
+  // fetch('/crear-huesped?forzar=true', method = 'POST',
+  //   {
+  //     headers: {
+  //       'Content-Type': 'application/x-www-form-urlencoded',
+  //     },
+  //     body: JSONStringify(huespedDTO)
+  //   }
+  // )
 
   forms.addEventListener('submit', function (event) {
     console.log('Formulario enviado');
@@ -268,3 +289,24 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 });
+
+// async function crearDtoHuesped() {
+//   const dtoHuesped = {
+//     apellido: document.getElementById('apellido').value,
+//     nombre: document.getElementById('nombre').value,
+//     tipoDocumento: document.getElementById('tipo-doc').value,
+//     nroDocumento: document.getElementById('nro-doc').value,
+//     fechaNacimiento: document.getElementById('fecha-nac').value,
+//     calle: document.getElementById('calle').value,
+//     numero: document.getElementById('nro-calle').value,
+//     pais: document.getElementById('pais').value,
+//     provincia: document.getElementById('provincia').value,
+//     codigoPostal: document.getElementById('codigo-postal').value,
+//     localidad: document.getElementById('localidad').value,
+//     telefono: document.getElementById('telefono').value,
+//     ocupacion: document.getElementById('ocupacion').value,
+//     nacionalidad: document.getElementById('nacionalidad').value,
+//     posicionIva: document.getElementById('posicion-iva').value
+//   };
+//   return dtoHuesped;
+// }

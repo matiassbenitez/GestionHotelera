@@ -44,8 +44,8 @@ public class GestionHuesped {
     return huespedDAOImpl.findAll();
   }
 
-  public Optional<Huesped> buscarPorNroDocumento(int nroDocumento) {
-    return huespedDAOImpl.findByNroDocumento(nroDocumento);
+  public Optional<Huesped> buscarPorNroDocumentoAndTipoDocumento(int nroDocumento, String tipoDocumento) {
+    return huespedDAOImpl.findByNroDocumentoAndTipoDocumento(nroDocumento, tipoDocumento);
   }
 
   public Huesped darDeAltaHuesped(HuespedDTO nuevoHuespedDTO) {

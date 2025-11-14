@@ -5,45 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text=${title}></title>
   <script th:src="@{/index.js}"></script>
+  <script th:src="@{/select.js}"></script>
   <link rel="stylesheet" th:href="@{/style.css}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
 <body>
-  <div th:if="${success}" id="modal-success" class="modal modal-success">
+
+  <div th:if="${success}" id="modal-success" class="simple-modal modal-success">
     <div class="modal-content">
       <p th:text=${success}></p>
       <button id="button-si" class="btn btn-primary">Sí</button>
       <button id="button-no" class="btn btn-outline-danger">No</button>
     </div>
   </div>
-  <div th:if="${error}" id="modal-error" class="modal modal-error">
+
+  <script th:if="${success}">
+    const modalSuccess = document.getElementById("modal-success");
+    modalSuccess.style.display = "block";
+    const botonSi = document.getElementById("button-si");
+    const botonNo = document.getElementById("button-no");
+    botonSi.addEventListener("click", function() {
+      modalSuccess.style.display = "none";
+      window.location.reload();
+    });
+    botonNo.addEventListener("click", function() {
+      modalSuccess.style.display = "none";
+      window.location.href = "/";
+    });
+  </script>
+
+
+  <div th:if="${error}" id="modal-error" class="simple-modal modal-error">
     <div class="modal-content">
       <p th:text=${error}></p>
       <button id="button-aceptar" class="btn btn-primary">Aceptar igualmente</button>
       <button id="button-corregir" class="btn btn-outline-danger">Corregir</button>
     </div>
   </div>
-  <div id="modal-seguro" class="modal modal-seguro" style="display: none;">
+
+  <div id="modal-seguro" class="simple-modal modal-seguro" style="display: none;">
     <div class="modal-content">
       <p>¿Desea cancelar el alta del huésped?</p>
       <button id="button-cancelar-si" class="btn btn-primary">Sí</button>
       <button id="button-cancelar-no" class="btn btn-outline-danger">No</button>
     </div>
   </div>
+
   <h1>INGRESAR DATOS DEL NUEVO HUESPED</h1>
-  <form id="formulario" action="/crear-huesped" method="post" novalidate>
+  <form id="formulario" action="/crear-huesped" th:object="${nuevoHuespedDTO}" method="post" novalidate>
     <div class="form-group">
       <label for="apellido">Apellido*</label>
-      <input class="form-control-sm" type="text" name="apellido" id="apellido" placeholder="Apellido">
+      <input class="form-control-sm" type="text" th:field="*{apellido}" name="apellido" id="apellido" placeholder="Apellido">
       <label for="nombre">Nombres*</label>
-      <input class="form-control-sm" type="text" name="nombre" id="nombre" placeholder="Nombres">
+      <input class="form-control-sm" type="text" th:field="*{nombre}" name="nombre" id="nombre" placeholder="Nombres">
       <label for="fecha-nac">Fecha de nacimiento*</label>
-      <input class="" type="date" name="fechaNac" id="fecha-nac">
+      <input class="" type="date" th:field="*{fechaNac}" name="fechaNac" id="fecha-nac">
     </div>
     <div class="form-group">
       <label for="tipo-doc">Tipo de documento*</label>
-      <select class="form-control-sm" name="tipoDocumento" id="tipo-doc">
+      <select class="form-control-sm" th:field="*{tipoDocumento}" name="tipoDocumento" id="tipo-doc">
         <option selected value="dni">DNI</option>
         <option value="pasaporte">Pasaporte</option>
         <option value="lc">LC</option>
@@ -51,48 +72,61 @@
         <option value="otro">Otro</option>
       </select>
       <label for="nro-doc">Numero de documento*</label>
-      <input class="form-control-sm" type="number" name="nroDocumento" id="nro-doc" placeholder="99.999.999">
+      <input class="form-control-sm" type="number" th:field="*{nroDocumento}" name="nroDocumento" id="nro-doc" placeholder="99.999.999">
       <label for="nacionalidad">Nacionalidad*</label>
-      <input class="form-control-sm" type="text" name="nacionalidad" id="nacionalidad" placeholder="Nacionalidad">
+      <input class="form-control-sm" type="text" th:field="*{nacionalidad}" name="nacionalidad" id="nacionalidad" placeholder="Nacionalidad">
     </div>
     <label for="calle">Dirección*</label>
-    <input class="form-control-sm" type="text" name="calle" id="calle" placeholder="Calle(*)">
+    <input class="form-control-sm" type="text" th:field="*{calle}" name="calle" id="calle" placeholder="Calle(*)">
     <label for="nro-calle">Número*</label>
-    <input class="form-control-sm" type="number" name="numero" id="nro-calle" placeholder="Número(*)">
+    <input class="form-control-sm" type="number" th:field="*{numero}" name="numero" id="nro-calle" placeholder="Número(*)">
     <label for="depto">Departamento</label>
-    <input class="form-control-sm" type="text" name="departamento" id="depto" placeholder="Departamento">
+    <input class="form-control-sm" type="text" th:field="*{departamento}" name="departamento" id="depto" placeholder="Departamento">
     <label for="piso">Piso</label> 
-    <input class="form-control-sm" type="number" name="piso" id="piso" placeholder="Piso">
+    <input class="form-control-sm" type="number" th:field="*{piso}" name="piso" id="piso" placeholder="Piso">
     <label for="pais">País*</label>
-    <input class="form-control-sm" type="text" name="pais" id="pais" placeholder="País">
+     <select name="pais" th:field="*{pais}" id="pais"></select>
     <label for="provincia">Provincia*</label>
-    <input class="form-control-sm" type="text" name="provincia" id="provincia" placeholder="Provincia">
+    <input class="form-control-sm" type="text" th:field="*{provincia}" name="provincia" id="provincia" placeholder="Provincia">
     <label for="localidad">Localidad*</label>
-    <input class="form-control-sm" type="text" name="localidad" id="localidad" placeholder="Localidad">
+    <input class="form-control-sm" type="text" th:field="*{localidad}" name="localidad" id="localidad" placeholder="Localidad">
     <label class="form-control-sm" for="codigo-postal">Código postal*</label>
-    <input type="number" name="codPostal" id="codigo-postal" placeholder="Código postal">
+    <input type="number" th:field="*{codPostal}" name="codPostal" id="codigo-postal" placeholder="Código postal">
     <label for="telefono">Teléfono*</label>
-    <select class="form-control-sm" name="prefijo" id="prefijo">
-      <option value="54" selected >+54</option>
-    </select>
-    <input class="form-control-sm" type="text" name="telefono" id="telefono" placeholder="Teléfono">
+    <select class="form-control-sm" th:field="*{prefijo}" name="prefijo" id="prefijo"></select>
+    <input class="form-control-sm" type="text" th:field="*{telefono}" name="telefono" id="telefono" placeholder="Teléfono">
     <label for="email">Email</label>
-    <input class="form-control-sm" type="email" name="email" id="email" placeholder="Email">
+    <input class="form-control-sm" type="email" th:field="*{email}" name="email" id="email" placeholder="Email">
     <label for="ocupacion">Ocupación*</label>
-    <input class="form-control-sm" type="text" name="ocupacion" id="ocupacion" placeholder="Ocupación">
+    <input class="form-control-sm" type="text" th:field="*{ocupacion}" name="ocupacion" id="ocupacion" placeholder="Ocupación">
     <label for="posicion-iva">Posición frente al IVA*</label>
-    <select class="form-control-sm" name="posicionIva" id="posicion-iva">
+    <select class="form-control-sm" th:field="*{posicionIva}" name="posicionIva" id="posicion-iva">
       <option value="consumidor-final" selected>Consumidor Final</option>
       <option selected value="responsable-inscripto">Responsable Inscripto</option>
       <option value="monotributista">Monotributista</option>
       <option value="exento">Exento</option>
     </select>
     <label for="cuit">C.U.I.T.</label>
-    <input class="form-control-sm" type="text" name="cuit" id="cuit" placeholder="99-.99.999.999-9">
+    <input class="form-control-sm" type="text" th:field="*{cuit}" name="cuit" id="cuit" placeholder="99-.99.999.999-9">
     <button type="submit" id="boton" class="btn btn-primary">Siguiente</button>
     <button type="button" id="cancelar">Cancelar</button>
   </form>
   <ul id="errores"></ul>
   <ul id="error-formato"></ul>
+  <script th:if="${error}" >
+    let form = document.getElementById("formulario");
+    const modalError = document.getElementById("modal-error");
+    modalError.style.display = "block";
+    const botonAceptar = document.getElementById("button-aceptar");
+    const botonCorregir = document.getElementById("button-corregir");
+    botonAceptar.addEventListener("click", function() {
+      modalError.style.display = "none";
+      form.action = form.action + '?forzar=true';
+      form.submit();
+    });
+    botonCorregir.addEventListener("click", function() {
+      modalError.style.display = "none";
+    });
+  </script>
 </body>
 </html>

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface HuespedDAO extends JpaRepository<Huesped, Long> {
-  Optional<Huesped> findByNroDocumento(int nroDocumento);
+  Optional<Huesped> findByNroDocumentoAndTipoDocumento(int nroDocumento, String tipoDocumento);
 }
