@@ -2,7 +2,6 @@ package com.example.GestionHotelera.model;
 
 import java.sql.Date;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -34,16 +33,13 @@ public class Huesped {
   @JoinColumn(name = "direccion_id")
   private Direccion direccion;
 
-  //@OneToOne(mappedBy = "huesped")
-  @OneToOne(cascade = CascadeType.ALL) // 1. Habilita la persistencia en cascada
+  @OneToOne(cascade = CascadeType.ALL) 
   @JoinColumn(name = "posicion_fiscal_id")
   private PosicionFiscal posicionFiscal;
-  //@OneToOne(mappedBy = "huesped")
-  @OneToOne(cascade = CascadeType.ALL) // 1. Habilita la persistencia en cascada
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "ubicacion_id")
   private Ubicacion ubicacion;
-  //@OneToOne(mappedBy = "huesped")
-  @OneToOne(cascade = CascadeType.ALL) // 1. Habilita la persistencia en cascada
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "contacto_id")
   private Contacto contacto;
 }

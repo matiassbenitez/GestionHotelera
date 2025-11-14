@@ -8,12 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
 import com.example.GestionHotelera.DTO.HuespedDTO;
-import com.example.GestionHotelera.model.Direccion;
 import com.example.GestionHotelera.model.Huesped;
-import com.example.GestionHotelera.repository.HuespedDAO;
 import com.example.GestionHotelera.service.GestionHuesped;
 
-import java.lang.ProcessBuilder.Redirect;
 import java.util.Optional;
 
 
@@ -31,7 +28,7 @@ public class VistaController {
     model.addAttribute("nuevoHuespedDTO", new HuespedDTO());
     return "index";}
 
-  @PostMapping("/crear-huesped") //crear-huesped?forzar=true
+  @PostMapping("/crear-huesped")
   public String crearHuesped(
     @ModelAttribute HuespedDTO nuevoHuespedDTO,
     Model model,
