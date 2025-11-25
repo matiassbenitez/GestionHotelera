@@ -1,3 +1,42 @@
-<div th:fragment="page-content">
-  <h1>Estado de las Habitaciones</h1>
+<div th:fragment="contenido">
+    <h1>Estado de las Habitaciones</h1>
+
+    <!-- Acá va el contenido real -->
+    <div class="container mt-3">
+        <form id="formEstadoHabitacion">
+
+            <div class="mb-3">
+                <label for="fechaDesde" class="form-label">Desde fecha</label>
+                <input type="date" class="form-control" id="fechaDesde">
+                <small class="text-danger" id="errorDesde"></small>
+            </div>
+
+            <div class="mb-3">
+                <label for="fechaHasta" class="form-label">Hasta fecha</label>
+                <input type="date" class="form-control" id="fechaHasta">
+                <small class="text-danger" id="errorHasta"></small>
+            </div>
+
+            <button class="btn btn-primary" type="button" id="btnBuscar">Buscar</button>
+        </form>
+    </div>
+
+    <table class="table table-hover" id="tablaEstadoHabitaciones">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="habitacion : ${habitaciones}">
+                <td th:text="${habitacion.numero}"></td>
+                <td th:text="${habitacion.tipo}"></td>
+                <td th:text="${habitacion.estado}"></td>
+            </tr>
+        </tbody>      
+
+
+    <div id="resultado"></div>
 </div>

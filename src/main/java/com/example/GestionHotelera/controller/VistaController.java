@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
 import com.example.GestionHotelera.DTO.HuespedDTO;
+import com.example.GestionHotelera.model.Habitacion;
 import com.example.GestionHotelera.model.Huesped;
 import com.example.GestionHotelera.service.GestionHuesped;
 
@@ -63,11 +64,23 @@ public class VistaController {
     return "redirect:/huesped/crear";
   }
 
-  @GetMapping("/habitaciones/estado")
-  public String mostrarEstadoHabitaciones(Model model) {
-    model.addAttribute("title", "Estado de las Habitaciones");
+  @GetMapping("/habitacion/estado")
+        public String estadoHabitacion(
+        @RequestParam(required = false) String desde,
+        @RequestParam(required = false) String hasta,
+        Model model) {
+
+    if (desde != null && hasta != null) {
+        List<Habitacion> lista =
+                GestorHabitacion.obtenerEstadoHabitaciones(desde, hasta);
+
+        model.addAttribute("habitaciones", lista);
+    }
+
     model.addAttribute("viewName", "estadoHabitaciones");
-    return "layout";}
+    return "layout";
+}
+
 
   @GetMapping("/habitaciones/reservar")
   public String mostrarReservarHabitacion(Model model) {
