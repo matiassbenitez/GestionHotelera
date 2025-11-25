@@ -12,11 +12,13 @@ import jakarta.persistence.CascadeType;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Data
 @Getter
 @Setter
+@ToString(exclude = {"huespedes", "departamento"})
 public class Direccion {  
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +32,5 @@ public class Direccion {
   @OneToOne(optional = true,cascade = CascadeType.PERSIST)
   @JoinColumn(name = "departamento_id", referencedColumnName = "id")
   private Departamento departamento;
+
 }

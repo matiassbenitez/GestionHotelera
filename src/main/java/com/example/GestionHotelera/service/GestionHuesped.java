@@ -3,6 +3,7 @@ package com.example.GestionHotelera.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.GestionHotelera.model.Huesped;
@@ -14,6 +15,8 @@ import com.example.GestionHotelera.model.Contacto;
 import com.example.GestionHotelera.model.PosicionFiscal;
 import com.example.GestionHotelera.repository.HuespedDAO;
 import com.example.GestionHotelera.repository.DireccionDAO;
+import com.example.GestionHotelera.specifications.HuespedSpecification;
+
 
 @Service
 public class GestionHuesped {
@@ -32,7 +35,7 @@ public class GestionHuesped {
     return huespedDAOImpl.findAll();
   }
 
-  public Optional<Huesped> buscarPorNroDocumentoAndTipoDocumento(int nroDocumento, String tipoDocumento) {
+  public Optional<Huesped> buscarPorNroDocumentoAndTipoDocumento(String nroDocumento, String tipoDocumento) {
     return huespedDAOImpl.findByNroDocumentoAndTipoDocumento(nroDocumento, tipoDocumento);
   }
 
@@ -53,12 +56,12 @@ public class GestionHuesped {
       direccion.setCalle(nuevoHuespedDTO.getCalle());
       direccion.setNumero(nuevoHuespedDTO.getNumero());
 
-    if (nuevoHuespedDTO.getPiso() != 0 || nuevoHuespedDTO.getDepartamento() != null) {
+    if (!nuevoHuespedDTO.getPiso().isEmpty() || nuevoHuespedDTO.getDepartamento() != null) {
       Departamento departamento = new Departamento();
       if (nuevoHuespedDTO.getDepartamento() != null && !nuevoHuespedDTO.getDepartamento().isEmpty()) {
         departamento.setDepartamento(nuevoHuespedDTO.getDepartamento());
       }
-      if (nuevoHuespedDTO.getPiso() != 0) {
+      if (!nuevoHuespedDTO.getPiso().isEmpty()) {
         departamento.setPiso(nuevoHuespedDTO.getPiso());
       }
       direccion.setDepartamento(departamento);
@@ -96,5 +99,22 @@ public class GestionHuesped {
     return huespedDAOImpl.save(nuevoHuesped);
   }
 
+  public List<Huesped> buscarHuespedesPorCriterios(String apellido, String nombre, String tipoDocumento, String nroDocumento) {
+    
+    Specification<Huesped> spec = Specification.not(null);
+    if (apellido != null && !apellido.isEmpty()) {
+      spec = spec.and(HuespedSpecification.apellidoStartsWith(apellido.trim()));
+    }
+    if (nombre != null && !nombre.isEmpty()) {
+      spec = spec.and(HuespedSpecification.nombreStartsWith(nombre.trim()));
+    }
+    if (tipoDocumento != null && !tipoDocumento.trim().isEmpty()) {
+      spec = spec.and(HuespedSpecification.hasTipoDocumento(tipoDocumento.trim()));
+    }
+    if (nroDocumento != null && !nroDocumento.trim().isEmpty()) {
+      spec = spec.and(HuespedSpecification.hasNroDocumento(nroDocumento.trim()));
+    }
+    return huespedDAOImpl.findAll(spec);
+  }
 
 }

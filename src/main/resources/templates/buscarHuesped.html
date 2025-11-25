@@ -1,0 +1,117 @@
+<div th:fragment="page-content">
+    <script src="/buscarHuesped.js"></script>
+    <div class="container my-5">
+        <div class="card shadow p-4 mx-auto" style="max-width: 1200px">
+            <!-- Título -->
+            <h1 class="fw-bold mb-4" style="align-self: center">
+                BUSCAR HUESPED
+            </h1>
+
+            <!-- Filtros -->
+            <form class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label for="apellido" class="form-label">Apellido</label>
+                    <input
+                        type="text"
+                        id="apellido"
+                        class="form-control"
+                        placeholder="Apellido"
+                        th:value="${param.apellido}"
+                    />
+                </div>
+
+                <div class="col-md-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input
+                        type="text"
+                        id="nombre"
+                        class="form-control"
+                        placeholder="Nombre"
+                        th:value="${param.nombre}"
+                    />
+                </div>
+
+                <div class="col-md-3">
+                    <label for="tipoDoc" class="form-label"
+                        >Tipo de documento</label
+                    >
+                    <select
+                        id="tipoDoc"
+                        class="form-select"
+                        th:value="${param.tipoDoc}"
+                    >
+                        <option value="" selected>Tipo de Documento</option>
+                        <option>DNI</option>
+                        <option>Pasaporte</option>
+                        <option>LC</option>
+                        <option>LE</option>
+                        <option>Otro</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="nroDoc" class="form-label"
+                        >Número de documento</label
+                    >
+                    <input
+                        type="text"
+                        id="nroDoc"
+                        class="form-control"
+                        placeholder="Número de Documento"
+                        th:value="${param.nroDoc}"
+                    />
+                </div>
+
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn btn-secondary w-100">
+                        Buscar
+                    </button>
+                </div>
+            </form>
+
+            <!-- Tabla -->
+            <div class="container-fluid p-0">
+                <div
+                    class="row table-light fw-bold text-uppercase py-2 border-bottom border-top g-0"
+                >
+                    <div id="color" class="col-3">Apellido</div>
+                    <div class="col-3">Nombre</div>
+                    <div class="col-3">Tipo de Documento</div>
+                    <div class="col-3">Número de Documento</div>
+                </div>
+                <div id="listado-huespedes">
+                    <ul th:if="${mostrarResultados}">
+                        <li
+                            th:each="huesped : ${resultados}"
+                            class="row py-2 border-bottom g-0"
+                        >
+                            <div class="col-3" th:text="${huesped.apellido}">
+                                Apellido
+                            </div>
+                            <div class="col-3" th:text="${huesped.nombre}">
+                                Nombre
+                            </div>
+                            <div
+                                class="col-3"
+                                th:text="${huesped.tipoDocumento}"
+                            >
+                                Tipo de Documento
+                            </div>
+                            <div
+                                class="col-3"
+                                th:text="${huesped.nroDocumento}"
+                            >
+                                Número de Documento
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Botón siguiente -->
+            <div class="text-end">
+                <button class="btn btn-primary">Siguiente</button>
+            </div>
+        </div>
+    </div>
+</div>

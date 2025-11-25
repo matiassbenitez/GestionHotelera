@@ -17,13 +17,13 @@ public class HuespedDTO {
   private String nombre;
   private String apellido;
   private String tipoDocumento;
-  private Integer nroDocumento;
+  private String nroDocumento;
   private Date fechaNac;
   private String nacionalidad;
   private String calle;
   private Integer numero;
   private String departamento;
-  private Integer piso;
+  private String piso;
   private String localidad;
   private String provincia;
   private String pais;

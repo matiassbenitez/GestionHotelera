@@ -19,7 +19,7 @@ public class GestionDireccion {
     return direccionDAO.findAll();
   }
 
-  public Optional<Direccion> buscarDireccion(String calle, int numero, String departamento, int piso) {
+  public Optional<Direccion> buscarDireccion(String calle, int numero, String departamento, String piso) {
     return direccionDAO.findByCalleAndNumeroAndDepartamento_DepartamentoAndDepartamento_Piso(calle, numero, departamento, piso);
   }
 

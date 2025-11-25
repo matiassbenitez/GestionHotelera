@@ -17,7 +17,7 @@ public class Departamento {
   @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
   private Long id;
   private String departamento;
-  private Integer piso;
+  private String piso;
   @OneToOne(mappedBy = "departamento")
   private Direccion direccion;
 }

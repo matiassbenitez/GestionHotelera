@@ -13,11 +13,13 @@ import jakarta.persistence.CascadeType;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Data
 @Getter
 @Setter
+@ToString(exclude = {"direccion", "posicionFiscal", "ubicacion", "contacto", "habitacion"})
 public class Huesped {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +27,7 @@ public class Huesped {
   private String nombre;
   private String apellido;
   private String tipoDocumento;
-  private int nroDocumento;
+  private String nroDocumento;
   private Date fechaNac;
   private String nacionalidad;
   
@@ -36,10 +38,17 @@ public class Huesped {
   @OneToOne(cascade = CascadeType.ALL) 
   @JoinColumn(name = "posicion_fiscal_id")
   private PosicionFiscal posicionFiscal;
+
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "ubicacion_id")
   private Ubicacion ubicacion;
+
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "contacto_id")
   private Contacto contacto;
+
+  @ManyToOne(optional = true)
+  @JoinColumn(name = "habitacion_id", referencedColumnName = "id")
+  private Habitacion habitacion;
+
 }
