@@ -1,5 +1,10 @@
+let currentSortColumn = null;
+let currentSortOrder = 'asc';
+
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.querySelector("form");
+    const encabezados = document.querySelectorAll(".fila-encabezados div");
+    console.log("Encabezados encontrados:", encabezados);
     
     form.addEventListener("submit", function(event) {
         event.preventDefault();
@@ -9,41 +14,46 @@ document.addEventListener("DOMContentLoaded", function() {
         const tipo = document.getElementById("tipoDoc").value;
         const dni = document.getElementById("nroDoc").value;
         const params = new URLSearchParams({ apellido, nombre, tipo, dni });
-        // fetch(`${url}?${params.toString()}`, {
-        //     method: "GET",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     }
-        // })
-        // .then(response => response.text())
-        // .then(data => {
-        //     //console.log(data);
-        //     resultsTable.innerHTML ='';
-        //     if (!data) {
-        //       resultsTable.innerHTML = '<p>No se encontraron huéspedes que coincidan con los criterios de búsqueda.</p>';  
-        //         return;
-        //     }
-        //     const listaHuespedes = document.createElement("ul");
-        //     listaHuespedes.classList.add("list-group");
-        //     data = JSON.parse(data);
-        //     data.map(huesped => {
-        //         const row = document.createElement("li");
-        //         row.classList.add("row", "py-2", "border-bottom");
-        //         row.innerHTML = `
-        //             <div class="col-3 text-truncate">${huesped.apellido}</div>
-        //             <div class="col-3 text-truncate">${huesped.nombre}</div>
-        //             <div class="col-3 text-truncate">${huesped.tipoDocumento}</div>
-        //             <div class="col-3 text-truncate">${huesped.numeroDocumento}</div>
-        //         `;
-        //         listaHuespedes.appendChild(row);
-        //     });
-        //     resultsTable.appendChild(listaHuespedes);
-
-        // })
-        // .catch(error => console.error('Error:', error));
-
-        // alert("Búsqueda realizada");
         window.location.href = `${url}&${params.toString()}`;
     });
+
+    encabezados.forEach((encabezado, index) => {
+      encabezado.style.cursor = "pointer";
+      encabezado.dataset.columnIndex = index;  
+      encabezado.addEventListener("click", function() {
+          const columnIndex = parseInt(encabezado.dataset.columnIndex);
+          sortTableByColumn(columnIndex);
+      });
+    });
+
+    function sortTableByColumn(columnIndex) {
+        const listado = document.getElementById("listado-huespedes");
+        const ul = listado.querySelector("ul");
+        const filas = Array.from(listado.querySelectorAll("ul li"));
+        if (filas.length === 0) return;
+        let nextSortOrder = 'asc';
+
+        if (currentSortColumn === columnIndex) {
+            nextSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+        }
+        filas.sort((a, b) => {
+            const celdaA = a.children[columnIndex].textContent.trim().toLowerCase();
+            const celdaB = b.children[columnIndex].textContent.trim().toLowerCase();
+            if (celdaA < celdaB) return nextSortOrder === 'asc' ? -1 : 1;
+            if (celdaA > celdaB) return nextSortOrder === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        filas.forEach(fila => ul.appendChild(fila));
+        currentSortColumn = columnIndex;
+        currentSortOrder = nextSortOrder;
+
+        document.querySelectorAll(".sort-icon").forEach(icon => icon.textContent = '');
+
+        const sortIndicator = nextSortOrder === 'asc' ? ' ↑' : ' ↓';
+        console.log("Setting sort indicator:", sortIndicator);
+        console.log("For header:", encabezados[currentSortColumn]);
+        encabezados[currentSortColumn].querySelector(".sort-icon").textContent = sortIndicator;
+    }
 
 });

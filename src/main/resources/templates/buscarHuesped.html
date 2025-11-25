@@ -72,12 +72,20 @@
             <!-- Tabla -->
             <div class="container-fluid p-0">
                 <div
-                    class="row table-light fw-bold text-uppercase py-2 border-bottom border-top g-0"
+                    class="fila-encabezados row table-light fw-bold text-uppercase py-2 border-bottom border-top g-0"
                 >
-                    <div id="color" class="col-3">Apellido</div>
-                    <div class="col-3">Nombre</div>
-                    <div class="col-3">Tipo de Documento</div>
-                    <div class="col-3">Número de Documento</div>
+                    <div class="col-3"><span>Apellido</span>
+                    <span class="sort-icon" ></span>
+                    </div>
+                    <div class="col-3"><span>Nombre</span>
+                    <span class="sort-icon" ></span>
+                    </div>
+                    <div class="col-3"><span>Tipo de Documento</span>
+                    <span class="sort-icon" ></span>
+                    </div>
+                    <div class="col-3"><span>Número de Documento</span>
+                    <span class="sort-icon" ></span>
+                    </div>
                 </div>
                 <div id="listado-huespedes">
                     <ul th:if="${mostrarResultados}">
