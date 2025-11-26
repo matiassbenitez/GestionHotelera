@@ -1,19 +1,16 @@
 package com.example.GestionHotelera.model;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@DiscriminatorValue("HUESPED") // <-- Añadir
+@DiscriminatorValue("HUESPED")
 @Getter
 @Setter
-@NoArgsConstructor // <-- Añadir (JPA lo necesita)
+@NoArgsConstructor 
 public class HuespedResponsable extends ResponsablePago {
   
   @OneToOne

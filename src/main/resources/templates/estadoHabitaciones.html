@@ -1,42 +1,65 @@
 <div th:fragment="contenido">
-    <h1>Estado de las Habitaciones</h1>
+    <h1>Buscar Disponibilidad de Habitaciones</h1>
 
-    <!-- Acá va el contenido real -->
     <div class="container mt-3">
-        <form id="formEstadoHabitacion">
+        <form method="get" action="/buscar-disponibilidad">
 
+         
             <div class="mb-3">
                 <label for="fechaDesde" class="form-label">Desde fecha</label>
-                <input type="date" class="form-control" id="fechaDesde">
-                <small class="text-danger" id="errorDesde"></small>
+                <input type="date" class="form-control" id="fechaDesde" name="desde" th:value="${desde}">
+                <small class="text-danger" th:text="${errorDesde}"></small>
+            </div>
+
+           
+            <div class="mb-3">
+                <label for="fechaHasta" class="form-label">Hasta fecha</label>
+                <input type="date" class="form-control" id="fechaHasta" name="hasta" th:value="${hasta}">
+                <small class="text-danger" th:text="${errorHasta}"></small>
             </div>
 
             <div class="mb-3">
-                <label for="fechaHasta" class="form-label">Hasta fecha</label>
-                <input type="date" class="form-control" id="fechaHasta">
-                <small class="text-danger" id="errorHasta"></small>
+                <label class="form-label">Tipo de Habitación</label>
+                <select class="form-select" name="tipo">
+                    <option value="">Todas</option>
+
+                    <!-- Enum TipoHabitacion -->
+                    <option th:each="t : ${tipos}"
+                            th:value="${t.name()}"
+                            th:text="${t}"
+                            th:selected="${t.name() == tipoSeleccionado}">
+                    </option>
+
+                </select>
             </div>
 
-            <button class="btn btn-primary" type="button" id="btnBuscar">Buscar</button>
+            <button class="btn btn-primary" type="submit">Buscar</button>
         </form>
     </div>
 
-    <table class="table table-hover" id="tablaEstadoHabitaciones">
-        <thead>
-            <tr>
-                <th>Número</th>
-                <th>Tipo</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="habitacion : ${habitaciones}">
-                <td th:text="${habitacion.numero}"></td>
-                <td th:text="${habitacion.tipo}"></td>
-                <td th:text="${habitacion.estado}"></td>
-            </tr>
-        </tbody>      
+    <!-- RESULTADO DE LA BUSQUEDA -->
+    <div class="mt-4" th:if="${grilla != null}">
+        <h3>Disponibilidad</h3>
 
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th th:each="hab : ${#lists.first(grilla).value}"
+                        th:text="'Hab. ' + ${hab.key.numero}">
+                    </th>
+                </tr>
+            </thead>
 
-    <div id="resultado"></div>
+            <tbody>
+                <tr th:each="entry : ${grilla}">
+                    <td th:text="${entry.key}"></td>
+                    <td th:each="estado : ${entry.value}"
+                        th:text="${estado.value}">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
 </div>

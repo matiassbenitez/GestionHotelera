@@ -1,26 +1,36 @@
 package com.example.GestionHotelera.controller;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.ui.Model;
+
 import com.example.GestionHotelera.DTO.HuespedDTO;
 import com.example.GestionHotelera.model.Habitacion;
 import com.example.GestionHotelera.model.Huesped;
+import com.example.GestionHotelera.model.TipoHabitacion;
+import com.example.GestionHotelera.service.GestionHabitacion;
 import com.example.GestionHotelera.service.GestionHuesped;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
 
 
 @Controller
+
 public class VistaController {
   private final GestionHuesped gestionHuesped;
-
+  @Autowired
+  private GestionHabitacion gestionHabitacion;
+  
   public VistaController(GestionHuesped gestionHuesped) {
     this.gestionHuesped = gestionHuesped;
   }
@@ -64,22 +74,34 @@ public class VistaController {
     return "redirect:/huesped/crear";
   }
 
-  @GetMapping("/habitacion/estado")
-        public String estadoHabitacion(
+  @GetMapping("/buscar-disponibilidad")
+public String buscarDisponibilidad(
         @RequestParam(required = false) String desde,
         @RequestParam(required = false) String hasta,
+        @RequestParam(required = false) String tipo,
         Model model) {
 
-    if (desde != null && hasta != null) {
-        List<Habitacion> lista =
-                GestorHabitacion.obtenerEstadoHabitaciones(desde, hasta);
+    model.addAttribute("desde", desde);
+    model.addAttribute("hasta", hasta);
+    model.addAttribute("tipoSeleccionado", tipo);
+    model.addAttribute("tipos", TipoHabitacion.values());
 
-        model.addAttribute("habitaciones", lista);
+    // Si faltan fechas → no buscar nada
+    if (desde == null || hasta == null || desde.isEmpty() || hasta.isEmpty()) {
+        return "layout"; 
     }
 
-    model.addAttribute("viewName", "estadoHabitaciones");
-    return "layout";
+    LocalDate fDesde = LocalDate.parse(desde);
+    LocalDate fHasta = LocalDate.parse(hasta);
+
+    Map<LocalDate, Map<Habitacion, String>> grilla =
+            gestionHabitacion.obtenerMapaDisponibilidad(fDesde, fHasta, tipo);
+
+    model.addAttribute("grilla", grilla);
+
+    return "layout"; 
 }
+
 
 
   @GetMapping("/habitaciones/reservar")

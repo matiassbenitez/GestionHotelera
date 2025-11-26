@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Llamar al controlador
         window.location.href =
-            `/habitacion/estado?desde=${desde.value}&hasta=${hasta.value}`;
+            `/estadoHabitacion?desde=${desde.value}&hasta=${hasta.value}`;
     });
 
 });
