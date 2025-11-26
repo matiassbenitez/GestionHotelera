@@ -10,24 +10,23 @@ import org.springframework.stereotype.Service;
 import com.example.GestionHotelera.model.Habitacion;
 import com.example.GestionHotelera.model.TipoHabitacion;
 import com.example.GestionHotelera.repository.EstadiaDAO;
+import com.example.GestionHotelera.repository.EstadoDAO;
 import com.example.GestionHotelera.repository.HabitacionDAO;
 import com.example.GestionHotelera.repository.ReservaDAO;
-
 
 @Service
 
 public class GestionHabitacion {
     private HabitacionDAO habitacionDAO;
-    private EstadiaDAO estadiaDAO;
-    private ReservaDAO reservaDAO;
-
+    private EstadoDAO estadoDAO;
+    
     public GestionHabitacion(
     HabitacionDAO habitacionDAO,
         EstadiaDAO estadiaDAO,
     ReservaDAO reservaDAO) {
      this.habitacionDAO = habitacionDAO;
-     this.estadiaDAO = estadiaDAO;
-    this.reservaDAO = reservaDAO;
+     this.estadoDAO = estadoDAO;
+    
     }
     public List<Habitacion> obtenerEstadoHabitaciones(String desde, String hasta) {
 
@@ -60,17 +59,19 @@ public Map<LocalDate, Map<Habitacion, String>> obtenerMapaDisponibilidad(
         Map<Habitacion, String> estadoPorHabitacion = new LinkedHashMap<>();
 
         for (Habitacion hab : habitaciones) {
+           
+            String estado = estadoDAO.EstadoEnFecha(hab.getId(), fecha);
+           
 
-            boolean ocupada = estadiaDAO.existeEstadiaActivaEnFecha(hab.getId(), fecha);
-            boolean reservada = reservaDAO.existeReservaEnFecha(hab.getId(), fecha);
-
-            if (ocupada) {
-                estadoPorHabitacion.put(hab, "ocupada");
-            } else if (reservada) {
-                estadoPorHabitacion.put(hab, "reservada");
-            } else {
-                estadoPorHabitacion.put(hab, "libre");
-            }
+           if (estado.equals("OCUPADA")) {
+               estadoPorHabitacion.put(hab, "OCUPADA");
+           } else if (estado.equals("RESERVADA")) {
+               estadoPorHabitacion.put(hab, "RESERVADA");
+           } if(estado.equals("FUERA_DE_SERVICIO")) {
+               estadoPorHabitacion.put(hab, "FUERA_DE_SERVICIO");
+           } else {
+               estadoPorHabitacion.put(hab, "LIBRE");
+           }
         }
         grilla.put(fecha, estadoPorHabitacion);
     }

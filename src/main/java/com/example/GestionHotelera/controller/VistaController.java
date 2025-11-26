@@ -84,11 +84,17 @@ public String buscarDisponibilidad(
     model.addAttribute("desde", desde);
     model.addAttribute("hasta", hasta);
     model.addAttribute("tipoSeleccionado", tipo);
-    model.addAttribute("tipos", TipoHabitacion.values());
-
+    String[] tipoHabitacion = TipoHabitacion.values().toString().split(", ");
+    System.out.println("Tipos de habitación disponibles: ");
+    for (String t : tipoHabitacion) { 
+        System.out.println(t);
+    }
+    model.addAttribute("tipos", tipoHabitacion);
+    
     // Si faltan fechas → no buscar nada
     if (desde == null || hasta == null || desde.isEmpty() || hasta.isEmpty()) {
-        return "layout"; 
+        
+      return "layout"; 
     }
 
     LocalDate fDesde = LocalDate.parse(desde);
@@ -99,6 +105,8 @@ public String buscarDisponibilidad(
 
     model.addAttribute("grilla", grilla);
 
+    model.addAttribute("title", "Buscar Disponibilidad");
+    model.addAttribute("viewName", "estadoHabitaciones");
     return "layout"; 
 }
 

@@ -1,17 +1,16 @@
 <div th:fragment="contenido">
-    <h1>Buscar Disponibilidad de Habitaciones</h1>
 
     <div class="container mt-3">
         <form method="get" action="/buscar-disponibilidad">
 
-         
+
             <div class="mb-3">
                 <label for="fechaDesde" class="form-label">Desde fecha</label>
                 <input type="date" class="form-control" id="fechaDesde" name="desde" th:value="${desde}">
                 <small class="text-danger" th:text="${errorDesde}"></small>
             </div>
 
-           
+
             <div class="mb-3">
                 <label for="fechaHasta" class="form-label">Hasta fecha</label>
                 <input type="date" class="form-control" id="fechaHasta" name="hasta" th:value="${hasta}">
@@ -23,13 +22,9 @@
                 <select class="form-select" name="tipo">
                     <option value="">Todas</option>
 
-                    <!-- Enum TipoHabitacion -->
-                    <option th:each="t : ${tipos}"
-                            th:value="${t.name()}"
-                            th:text="${t}"
-                            th:selected="${t.name() == tipoSeleccionado}">
+                    <option th:each="t : ${tipos}" th:value="${t.name()}" th:text="${t.name()}"
+                        th:selected="${t.name() == tipoSeleccionado}">
                     </option>
-
                 </select>
             </div>
 
@@ -45,8 +40,7 @@
             <thead>
                 <tr>
                     <th>Fecha</th>
-                    <th th:each="hab : ${#lists.first(grilla).value}"
-                        th:text="'Hab. ' + ${hab.key.numero}">
+                    <th th:each="hab : ${#lists.first(grilla).value}" th:text="'Hab. ' + ${hab.key.numero}">
                     </th>
                 </tr>
             </thead>
@@ -54,8 +48,7 @@
             <tbody>
                 <tr th:each="entry : ${grilla}">
                     <td th:text="${entry.key}"></td>
-                    <td th:each="estado : ${entry.value}"
-                        th:text="${estado.value}">
+                    <td th:each="estado : ${entry.value}" th:text="${estado.value}">
                     </td>
                 </tr>
             </tbody>
