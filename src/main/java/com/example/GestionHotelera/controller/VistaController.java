@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import com.example.GestionHotelera.DTO.HuespedDTO;
 import com.example.GestionHotelera.model.Huesped;
 import com.example.GestionHotelera.service.GestionHuesped;
+import com.example.GestionHotelera.model.TipoHabitacion;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +74,7 @@ public class VistaController {
   public String mostrarReservarHabitacion(Model model) {
     model.addAttribute("title", "Reservar Habitaciones");
     model.addAttribute("viewName", "reservarHabitacion");
+    model.addAttribute("tipos", TipoHabitacion.values());
     return "layout";}
 
   @GetMapping("/huesped/buscar")
