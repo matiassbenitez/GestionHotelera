@@ -1,3 +1,16 @@
 <div th:fragment="page-content">
   <h1>Reservar Habitaciones</h1>
+  <form>
+    <label for="fechaInicio">Fecha Inicio</label>
+    <input type="date" id="fechaInicio" name="fechaInicio">
+    <label for="fechaFin">Fecha Fin</label>
+    <input type="date" id="fechaFin" name="fechaFin">
+    <label for="tipo">Tipo de Habitación:</label>
+    <select name="tipo" id="tipo">
+      <option th:each="tipo : ${tipos}" 
+                    th:value="${tipo}" 
+                    th:text="${tipo}">
+            </option>
+    </select>
+  </form>
 </div>
