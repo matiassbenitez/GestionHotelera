@@ -42,3 +42,4 @@ public class Habitacion {
   @OneToMany(mappedBy = "habitacion")
   private List<Huesped> huesped;
 }
+
