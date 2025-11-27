@@ -84,12 +84,7 @@ public String buscarDisponibilidad(
     model.addAttribute("desde", desde);
     model.addAttribute("hasta", hasta);
     model.addAttribute("tipoSeleccionado", tipo);
-    String[] tipoHabitacion = TipoHabitacion.values().toString().split(", ");
-    System.out.println("Tipos de habitación disponibles: ");
-    for (String t : tipoHabitacion) { 
-        System.out.println(t);
-    }
-    model.addAttribute("tipos", tipoHabitacion);
+    model.addAttribute("tipos", TipoHabitacion.values());
     
     // Si faltan fechas → no buscar nada
     if (desde == null || hasta == null || desde.isEmpty() || hasta.isEmpty()) {
