@@ -7,9 +7,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
+import java.sql.Date;
 import com.example.GestionHotelera.DTO.HuespedDTO;
+import com.example.GestionHotelera.DTO.TablaEstadoDTO;
 import com.example.GestionHotelera.model.Huesped;
 import com.example.GestionHotelera.service.GestionHuesped;
+import com.example.GestionHotelera.service.GestionEstado;
+import com.example.GestionHotelera.model.TipoHabitacion;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +22,13 @@ import java.util.ArrayList;
 
 @Controller
 public class VistaController {
-  private final GestionHuesped gestionHuesped;
 
-  public VistaController(GestionHuesped gestionHuesped) {
+  private final GestionHuesped gestionHuesped;
+  private final GestionEstado gestionEstado;
+
+  public VistaController(GestionHuesped gestionHuesped,GestionEstado gestionEstado) {
     this.gestionHuesped = gestionHuesped;
+    this.gestionEstado = gestionEstado;
   }
 
   @GetMapping("/")//localhost:8080/
@@ -70,9 +77,26 @@ public class VistaController {
     return "layout";}
 
   @GetMapping("/habitaciones/reservar")
-  public String mostrarReservarHabitacion(Model model) {
+  public String mostrarReservarHabitacion(Model model,
+    @RequestParam(required = false) Date fechaInicio,
+    @RequestParam(required = false) Date fechaFin,
+    @RequestParam(required = false) String tipo)
+    {
     model.addAttribute("title", "Reservar Habitaciones");
     model.addAttribute("viewName", "reservarHabitacion");
+    model.addAttribute("tipos", TipoHabitacion.values());
+    boolean buscar = tipo != null && fechaInicio != null && fechaFin != null;
+    if (buscar) {
+      System.out.println(fechaInicio);
+      List<TablaEstadoDTO> tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin);
+      model.addAttribute("tipoSeleccionado", tipo);
+      model.addAttribute("fechaInicioSeleccionada", fechaInicio);
+      model.addAttribute("fechaFinSeleccionada", fechaFin);
+      System.out.println(fechaFin);
+      model.addAttribute("tablaEstados", tablaEstados);
+      System.out.println(tablaEstados.get(0).getEstadosPorHabitacion());
+      model.addAttribute("mostrarTabla", buscar);
+    }
     return "layout";}
 
   @GetMapping("/huesped/buscar")

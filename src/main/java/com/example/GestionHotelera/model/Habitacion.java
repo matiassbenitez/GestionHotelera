@@ -1,16 +1,19 @@
 package com.example.GestionHotelera.model;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Id;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.EnumType;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,11 +27,11 @@ public class Habitacion {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private int numero;
+  @Enumerated(EnumType.STRING)
   private TipoHabitacion tipo;
 
-  @OneToOne(optional = false)
-  @JoinColumn(name = "estado_id", referencedColumnName = "id")
-  private Estado estado;
+  @OneToMany(mappedBy = "habitacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Estado> estados = new ArrayList<>();
 
   @OneToMany(mappedBy = "habitacion")
   private List<Reserva> reserva;
