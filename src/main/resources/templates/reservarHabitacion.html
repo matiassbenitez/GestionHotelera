@@ -13,8 +13,37 @@
     </select>
   </form>
   <div>
-    <div th:each="tabla : ${tablaEstados}"
-          th:text="${tabla.estadosPorHabitacion}">
-        </div>
+    <table border="1" cellpadding="5" cellspacing="0">
+
+      <thead>
+        <tr>
+          <th>Fecha</th>
+
+          <!-- ENCABEZADO: IDs DE HABITACIÓN -->
+          <th th:each="habId : ${tablaEstados[0].estadosPorHabitacion.keySet()}"
+              th:text="'Hab ' + ${habId}">
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <!-- UNA FILA POR FECHA -->
+        <tr th:each="fila : ${tablaEstados}">
+
+          <!-- FECHA FORMATEADA -->
+          <td th:text="${#dates.format(fila.fecha, 'dd/MM/yyyy')}"></td>
+
+          <!-- UNA CELDA POR ESTADO →
+               ENTRY SET PARA NO PERDER LA KEY -->
+          <td th:each="entry : ${fila.estadosPorHabitacion.entrySet()}"
+              th:text="${entry.value}">
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
   </div>
 </div>
