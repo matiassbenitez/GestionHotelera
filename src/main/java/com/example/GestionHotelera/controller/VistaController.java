@@ -13,7 +13,9 @@ import com.example.GestionHotelera.DTO.TablaEstadoDTO;
 import com.example.GestionHotelera.model.Huesped;
 import com.example.GestionHotelera.service.GestionHuesped;
 import com.example.GestionHotelera.service.GestionEstado;
+import com.example.GestionHotelera.service.GestionHabitacion;
 import com.example.GestionHotelera.model.TipoHabitacion;
+import com.example.GestionHotelera.model.Habitacion;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +27,12 @@ public class VistaController {
 
   private final GestionHuesped gestionHuesped;
   private final GestionEstado gestionEstado;
+  private final GestionHabitacion gestionHabitacion;
 
-  public VistaController(GestionHuesped gestionHuesped,GestionEstado gestionEstado) {
+  public VistaController(GestionHuesped gestionHuesped,GestionEstado gestionEstado, GestionHabitacion gestionHabitacion) {
     this.gestionHuesped = gestionHuesped;
     this.gestionEstado = gestionEstado;
+    this.gestionHabitacion = gestionHabitacion;
   }
 
   @GetMapping("/")//localhost:8080/
@@ -88,7 +92,8 @@ public class VistaController {
     boolean buscar = tipo != null && fechaInicio != null && fechaFin != null;
     if (buscar) {
       System.out.println(fechaInicio);
-      List<TablaEstadoDTO> tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin);
+      List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(TipoHabitacion.valueOf(tipo));
+      List<TablaEstadoDTO> tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, habitaciones);
       model.addAttribute("tipoSeleccionado", tipo);
       model.addAttribute("fechaInicioSeleccionada", fechaInicio);
       model.addAttribute("fechaFinSeleccionada", fechaFin);

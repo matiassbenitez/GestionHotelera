@@ -37,7 +37,9 @@
           <!-- UNA CELDA POR ESTADO →
                ENTRY SET PARA NO PERDER LA KEY -->
           <td th:each="entry : ${fila.estadosPorHabitacion.entrySet()}"
-              th:text="${entry.value}">
+              th:text="${#strings.isEmpty(entry.value) ? 'DISPONIBLE' : entry.value}"
+              th:value="${entry.key}" 
+              th:style="${entry.value == 'RESERVADA' ? 'color: red;' : 'color: black;'}">
           </td>
 
         </tr>
