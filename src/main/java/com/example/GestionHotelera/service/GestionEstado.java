@@ -2,7 +2,7 @@ package com.example.GestionHotelera.service;
 import java.util.List;
 import java.util.Map;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.ArrayList;
 
 import org.springframework.stereotype.Service;
@@ -27,14 +27,21 @@ public class GestionEstado {
     habitaciones.forEach(h -> idsHabitaciones.add(h.getId()));
     for (LocalDate fecha = fechaInicio; !fecha.isAfter(fechaFin); fecha=fecha.plusDays(1)) {
       List<Estado> estadosDelDia = obtenerEstadosPorFecha(fecha, fecha);
-      Map<Long, String> estadosPorHabitacion = new HashMap<>();
+      Map<Long, String> estadosPorHabitacion = new TreeMap<>();
+      System.out.println("idsHabitaciones: " + idsHabitaciones.toString());
       for (Estado estado : estadosDelDia) {
+        System.out.println("Estado encontrado: Habitacion ID " + estado.getHabitacion().getId() + " - Estado: " + estado.getEstado());
         if (idsHabitaciones.contains(estado.getHabitacion().getId())) {
-          estadosPorHabitacion.put(estado.getHabitacion().getId(), estado.getEstado().name());
-        } else {
-          estadosPorHabitacion.put(estado.getHabitacion().getId(), "LIBRE");
+          estadosPorHabitacion.put(estado.getHabitacion().getId(), estado.getEstado().toString());
+        }
+        System.out.println("keys en el mapa: " + estadosPorHabitacion.keySet());
+        List<Long> habitacionesFaltantes = new ArrayList<>(idsHabitaciones);
+        habitacionesFaltantes.removeAll(estadosPorHabitacion.keySet());
+        for (Long idFaltante : habitacionesFaltantes) {
+          estadosPorHabitacion.put(idFaltante, "LIBRE");
         }
       }
+      System.out.println("Fecha: " + fecha + " - Estados: " + estadosPorHabitacion);
       TablaEstadoDTO tablaEstadoDTO = new TablaEstadoDTO(fecha, estadosPorHabitacion);
       tablaEstados.add(tablaEstadoDTO);
     }
