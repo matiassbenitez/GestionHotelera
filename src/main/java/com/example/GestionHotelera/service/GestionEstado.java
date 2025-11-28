@@ -1,7 +1,7 @@
 package com.example.GestionHotelera.service;
 import java.util.List;
 import java.util.Map;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.ArrayList;
 
@@ -17,12 +17,12 @@ public class GestionEstado {
   public GestionEstado(EstadoDAO estadoDAOImpl) {
     this.estadoDAOImpl = estadoDAOImpl;
   }
-  public List<Estado> obtenerEstadosPorFecha(Date fechaInicio, Date fechaFin) {
+  public List<Estado> obtenerEstadosPorFecha(LocalDate fechaInicio, LocalDate fechaFin) {
     return estadoDAOImpl.findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqual(fechaInicio, fechaFin);
   }
-  public List<TablaEstadoDTO> generarTablaEstados(Date fechaInicio, Date fechaFin) {
+  public List<TablaEstadoDTO> generarTablaEstados(LocalDate fechaInicio, LocalDate fechaFin) {
     List<TablaEstadoDTO> tablaEstados = new ArrayList<>();
-    for (Date fecha = fechaInicio; !fecha.after(fechaFin); fecha.setDate(fecha.getDate() + 1)) {
+    for (LocalDate fecha = fechaInicio; !fecha.isAfter(fechaFin); fecha=fecha.plusDays(1)) {
       List<Estado> estadosDelDia = obtenerEstadosPorFecha(fecha, fecha);
       Map<Long, String> estadosPorHabitacion = new HashMap<>();
       for (Estado estado : estadosDelDia) {

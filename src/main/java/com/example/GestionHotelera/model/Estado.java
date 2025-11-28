@@ -1,5 +1,5 @@
 package com.example.GestionHotelera.model;
-import java.util.Date;
+import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -26,8 +25,8 @@ public class Estado {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private Date fechaInicio;
-  private Date fechaFin;
+  private LocalDate fechaInicio;
+  private LocalDate fechaFin;
 
   @Enumerated(EnumType.STRING)
   private EstadoEnum estado;

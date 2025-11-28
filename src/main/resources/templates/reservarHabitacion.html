@@ -32,7 +32,7 @@
         <tr th:each="fila : ${tablaEstados}">
 
           <!-- FECHA FORMATEADA -->
-          <td th:text="${#dates.format(fila.fecha, 'dd/MM/yyyy')}"></td>
+          <td th:text="${#temporals.format(fila.fecha, 'dd/MM/yyyy')}"></td>
 
           <!-- UNA CELDA POR ESTADO →
                ENTRY SET PARA NO PERDER LA KEY -->

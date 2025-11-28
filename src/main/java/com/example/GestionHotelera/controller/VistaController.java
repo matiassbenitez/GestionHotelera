@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
-import java.sql.Date;
+import java.time.LocalDate;
 import com.example.GestionHotelera.DTO.HuespedDTO;
 import com.example.GestionHotelera.DTO.TablaEstadoDTO;
 import com.example.GestionHotelera.model.Huesped;
@@ -78,8 +78,8 @@ public class VistaController {
 
   @GetMapping("/habitaciones/reservar")
   public String mostrarReservarHabitacion(Model model,
-    @RequestParam(required = false) Date fechaInicio,
-    @RequestParam(required = false) Date fechaFin,
+    @RequestParam(required = false) LocalDate fechaInicio,
+    @RequestParam(required = false) LocalDate fechaFin,
     @RequestParam(required = false) String tipo)
     {
     model.addAttribute("title", "Reservar Habitaciones");
