@@ -11,15 +11,13 @@ import org.springframework.stereotype.Service;
 public class GestionHabitacion {
   
   private final HabitacionDAO habitacionDAOImpl;
-  private final EstadoDAO estadoDAOImpl;
 
   public GestionHabitacion(HabitacionDAO habitacionDAOImpl, EstadoDAO estadoDAOImpl) {
     this.habitacionDAOImpl = habitacionDAOImpl;
-    this.estadoDAOImpl = estadoDAOImpl;
   }
 
-  public List<Habitacion> obtenerHabitacionPorTipo(TipoHabitacion tipo) {
-    return habitacionDAOImpl.findByTipo(tipo);
+  public List<Habitacion> obtenerHabitacionesPorTipo(TipoHabitacion tipoHabitacion) {
+    return habitacionDAOImpl.findByTipo(tipoHabitacion);
   }
 
   

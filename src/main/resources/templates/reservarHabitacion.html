@@ -1,20 +1,26 @@
 <div th:fragment="page-content">
+  <script src="/reservarHabitacion.js" ></script>
   <h1>Reservar Habitaciones</h1>
-  <form action="">
     <label for="fechaInicio">Fecha de Inicio:</label>
-    <input type="date" id="fechaInicio" name="fechaInicio" required>
+    <input type="date" id="fechaInicio" th:value="${fechaInicioSeleccionada}" name="fechaInicio" required>
     <label for="fechaFin">Fecha de Fin:</label>
-    <input type="date" id="fechaFin" name="fechaFin" required>
+    <input type="date" id="fechaFin"  th:value="${fechaFinSeleccionada}" name="fechaFin" required>
     <label for="tipo">Tipo de Habitación</label>
     <select name="tipo" id="tipo">
-      <option th:each="tipo : ${tipos}"
-              th:text="${tipo}"
-              th:value="${tipo}" ></option>
+      <option value="" 
+            th:if="${tipoSeleccionado == null or tipoSeleccionado == ''}" 
+            th:text="'Seleccione...'" 
+            disabled 
+            selected>
+    </option>
+            
+    <option th:each="tipo : ${tipos}"
+            th:text="${tipo}"
+            th:value="${tipo}"
+            th:selected="${tipoSeleccionado != null and tipo.toString() == tipoSeleccionado.toString()}">
+    </option>
     </select>
-  </form>
-  <div>
-    <div th:each="tabla : ${tablaEstados}"
-          th:text="${tabla.estadosPorHabitacion}">
-        </div>
-  </div>
+<div th:if="${mostrarTabla}" >
+  <div  th:replace="estadoHabitaciones :: content" ></div>
+</div>
 </div>

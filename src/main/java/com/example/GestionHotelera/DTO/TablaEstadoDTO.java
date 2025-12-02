@@ -1,19 +1,19 @@
 package com.example.GestionHotelera.DTO;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Map;
 
 public class TablaEstadoDTO {
-  private Date fecha;
-  private Map<Long, String> estadosPorHabitacion;
-  public TablaEstadoDTO(Date fecha, Map<Long, String> estadosPorHabitacion) {
+  private LocalDate fecha;
+  private Map<Integer, String> estadosPorHabitacion;
+  public TablaEstadoDTO(LocalDate fecha, Map<Integer, String> estadosPorHabitacion) {
     this.fecha = fecha;
     this.estadosPorHabitacion = estadosPorHabitacion;
   }
-  public Date getFecha() {
+  public LocalDate getFecha() {
     return fecha;
   }
-  public Map<Long, String> getEstadosPorHabitacion() {
+  public Map<Integer, String> getEstadosPorHabitacion() {
     return estadosPorHabitacion;
   }
 }

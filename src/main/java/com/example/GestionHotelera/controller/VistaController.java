@@ -7,13 +7,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
-import java.sql.Date;
+import java.time.LocalDate;
 import com.example.GestionHotelera.DTO.HuespedDTO;
 import com.example.GestionHotelera.DTO.TablaEstadoDTO;
 import com.example.GestionHotelera.model.Huesped;
 import com.example.GestionHotelera.service.GestionHuesped;
 import com.example.GestionHotelera.service.GestionEstado;
+import com.example.GestionHotelera.service.GestionHabitacion;
 import com.example.GestionHotelera.model.TipoHabitacion;
+import com.example.GestionHotelera.model.Habitacion;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +27,12 @@ public class VistaController {
 
   private final GestionHuesped gestionHuesped;
   private final GestionEstado gestionEstado;
+  private final GestionHabitacion gestionHabitacion;
 
-  public VistaController(GestionHuesped gestionHuesped,GestionEstado gestionEstado) {
+  public VistaController(GestionHuesped gestionHuesped,GestionEstado gestionEstado, GestionHabitacion gestionHabitacion) {
     this.gestionHuesped = gestionHuesped;
     this.gestionEstado = gestionEstado;
+    this.gestionHabitacion = gestionHabitacion;
   }
 
   @GetMapping("/")//localhost:8080/
@@ -78,25 +82,27 @@ public class VistaController {
 
   @GetMapping("/habitaciones/reservar")
   public String mostrarReservarHabitacion(Model model,
-    @RequestParam(required = false) Date fechaInicio,
-    @RequestParam(required = false) Date fechaFin,
+    @RequestParam(required = false) LocalDate fechaInicio,
+    @RequestParam(required = false) LocalDate fechaFin,
     @RequestParam(required = false) String tipo)
     {
     model.addAttribute("title", "Reservar Habitaciones");
     model.addAttribute("viewName", "reservarHabitacion");
     model.addAttribute("tipos", TipoHabitacion.values());
     boolean buscar = tipo != null && fechaInicio != null && fechaFin != null;
+    List<TablaEstadoDTO> tablaEstados = new ArrayList<>();
     if (buscar) {
       System.out.println(fechaInicio);
-      List<TablaEstadoDTO> tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin);
-      model.addAttribute("tipoSeleccionado", tipo);
-      model.addAttribute("fechaInicioSeleccionada", fechaInicio);
-      model.addAttribute("fechaFinSeleccionada", fechaFin);
+      List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(TipoHabitacion.valueOf(tipo));
+      tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, habitaciones);
       System.out.println(fechaFin);
-      model.addAttribute("tablaEstados", tablaEstados);
       System.out.println(tablaEstados.get(0).getEstadosPorHabitacion());
       model.addAttribute("mostrarTabla", buscar);
     }
+    model.addAttribute("tablaEstados", tablaEstados);
+    model.addAttribute("tipoSeleccionado", tipo);
+    model.addAttribute("fechaInicioSeleccionada", fechaInicio);
+    model.addAttribute("fechaFinSeleccionada", fechaFin);
     return "layout";}
 
   @GetMapping("/huesped/buscar")
