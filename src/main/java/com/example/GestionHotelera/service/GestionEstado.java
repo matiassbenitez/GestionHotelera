@@ -19,33 +19,37 @@ public class GestionEstado {
     this.estadoDAOImpl = estadoDAOImpl;
   }
   public List<Estado> obtenerEstadosPorFecha(LocalDate fechaInicio, LocalDate fechaFin) {
+    //System.out.println("GestionEstado - obtenerEstadosPorFecha: " + fechaInicio + " / " + fechaFin);
     return estadoDAOImpl.findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqual(fechaInicio, fechaFin);
   }
   public List<TablaEstadoDTO> generarTablaEstados(LocalDate fechaInicio, LocalDate fechaFin, List<Habitacion> habitaciones) {
     List<TablaEstadoDTO> tablaEstados = new ArrayList<>();
-    List<Long> idsHabitaciones = new ArrayList<>();
-    habitaciones.forEach(h -> idsHabitaciones.add(h.getId()));
+    List<Integer> nroHabitaciones = new ArrayList<>();
+    habitaciones.forEach(h -> nroHabitaciones.add(h.getNumero()));
     for (LocalDate fecha = fechaInicio; !fecha.isAfter(fechaFin); fecha=fecha.plusDays(1)) {
       List<Estado> estadosDelDia = obtenerEstadosPorFecha(fecha, fecha);
-      Map<Long, String> estadosPorHabitacion = new TreeMap<>();
-      System.out.println("idsHabitaciones: " + idsHabitaciones.toString());
+      System.out.println("Fecha: " + fecha + " - Estados encontrados: " + estadosDelDia.size());
+      Map<Integer, String> estadosPorHabitacion = new TreeMap<>();
+      //System.out.println("nroHabitaciones: " + nroHabitaciones.toString());
       for (Estado estado : estadosDelDia) {
-        System.out.println("Estado encontrado: Habitacion ID " + estado.getHabitacion().getId() + " - Estado: " + estado.getEstado());
-        if (idsHabitaciones.contains(estado.getHabitacion().getId())) {
-          estadosPorHabitacion.put(estado.getHabitacion().getId(), estado.getEstado().toString());
-        }
-        System.out.println("keys en el mapa: " + estadosPorHabitacion.keySet());
-        List<Long> habitacionesFaltantes = new ArrayList<>(idsHabitaciones);
-        habitacionesFaltantes.removeAll(estadosPorHabitacion.keySet());
-        for (Long idFaltante : habitacionesFaltantes) {
-          estadosPorHabitacion.put(idFaltante, "LIBRE");
+        //System.out.println("Estado encontrado: Habitacion nro " + estado.getHabitacion().getNumero() + " - Estado: " + estado.getEstado());
+        if (nroHabitaciones.contains(estado.getHabitacion().getNumero())) {
+          estadosPorHabitacion.put(estado.getHabitacion().getNumero(), estado.getEstado().toString());
         }
       }
-      System.out.println("Fecha: " + fecha + " - Estados: " + estadosPorHabitacion);
+        //System.out.println("keys en el mapa: " + estadosPorHabitacion.keySet());
+        List<Integer> habitacionesFaltantes = new ArrayList<>(nroHabitaciones);
+        System.out.println("habitacionesFaltantes antes de remover: " + habitacionesFaltantes);
+        habitacionesFaltantes.removeAll(estadosPorHabitacion.keySet());
+        System.out.println("habitacionesFaltantes despues de remover: " + habitacionesFaltantes);
+        for (Integer idFaltante : habitacionesFaltantes) {
+          estadosPorHabitacion.put(idFaltante, "LIBRE");
+        }
+      //System.out.println("Fecha: " + fecha + " - Estados: " + estadosPorHabitacion);
       TablaEstadoDTO tablaEstadoDTO = new TablaEstadoDTO(fecha, estadosPorHabitacion);
       tablaEstados.add(tablaEstadoDTO);
     }
-    System.out.println("cantidad de estados: " + tablaEstados.size());
+    //System.out.println("cantidad de estados: " + tablaEstados.size());
     return tablaEstados;
   }
 }

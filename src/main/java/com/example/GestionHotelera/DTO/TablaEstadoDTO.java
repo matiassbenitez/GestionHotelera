@@ -5,15 +5,15 @@ import java.util.Map;
 
 public class TablaEstadoDTO {
   private LocalDate fecha;
-  private Map<Long, String> estadosPorHabitacion;
-  public TablaEstadoDTO(LocalDate fecha, Map<Long, String> estadosPorHabitacion) {
+  private Map<Integer, String> estadosPorHabitacion;
+  public TablaEstadoDTO(LocalDate fecha, Map<Integer, String> estadosPorHabitacion) {
     this.fecha = fecha;
     this.estadosPorHabitacion = estadosPorHabitacion;
   }
   public LocalDate getFecha() {
     return fecha;
   }
-  public Map<Long, String> getEstadosPorHabitacion() {
+  public Map<Integer, String> getEstadosPorHabitacion() {
     return estadosPorHabitacion;
   }
 }

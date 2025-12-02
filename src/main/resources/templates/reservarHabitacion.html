@@ -1,51 +1,26 @@
 <div th:fragment="page-content">
+  <script src="/reservarHabitacion.js" ></script>
   <h1>Reservar Habitaciones</h1>
-  <form action="">
     <label for="fechaInicio">Fecha de Inicio:</label>
-    <input type="date" id="fechaInicio" name="fechaInicio" required>
+    <input type="date" id="fechaInicio" th:value="${fechaInicioSeleccionada}" name="fechaInicio" required>
     <label for="fechaFin">Fecha de Fin:</label>
-    <input type="date" id="fechaFin" name="fechaFin" required>
+    <input type="date" id="fechaFin"  th:value="${fechaFinSeleccionada}" name="fechaFin" required>
     <label for="tipo">Tipo de Habitación</label>
     <select name="tipo" id="tipo">
-      <option th:each="tipo : ${tipos}"
-              th:text="${tipo}"
-              th:value="${tipo}" ></option>
+      <option value="" 
+            th:if="${tipoSeleccionado == null or tipoSeleccionado == ''}" 
+            th:text="'Seleccione...'" 
+            disabled 
+            selected>
+    </option>
+            
+    <option th:each="tipo : ${tipos}"
+            th:text="${tipo}"
+            th:value="${tipo}"
+            th:selected="${tipoSeleccionado != null and tipo.toString() == tipoSeleccionado.toString()}">
+    </option>
     </select>
-  </form>
-  <div>
-    <table border="1" cellpadding="5" cellspacing="0">
-
-      <thead>
-        <tr>
-          <th>Fecha</th>
-
-          <!-- ENCABEZADO: IDs DE HABITACIÓN -->
-          <th th:each="habId : ${tablaEstados[0].estadosPorHabitacion.keySet()}"
-              th:text="'Hab ' + ${habId}">
-          </th>
-        </tr>
-      </thead>
-
-      <tbody>
-
-        <!-- UNA FILA POR FECHA -->
-        <tr th:each="fila : ${tablaEstados}">
-
-          <!-- FECHA FORMATEADA -->
-          <td th:text="${#temporals.format(fila.fecha, 'dd/MM/yyyy')}"></td>
-
-          <!-- UNA CELDA POR ESTADO →
-               ENTRY SET PARA NO PERDER LA KEY -->
-          <td th:each="entry : ${fila.estadosPorHabitacion.entrySet()}"
-              th:text="${#strings.isEmpty(entry.value) ? 'DISPONIBLE' : entry.value}"
-              th:value="${entry.key}" 
-              th:style="${entry.value == 'RESERVADA' ? 'color: red;' : 'color: black;'}">
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-  </div>
+<div th:if="${mostrarTabla}" >
+  <div  th:replace="estadoHabitaciones :: content" ></div>
+</div>
 </div>

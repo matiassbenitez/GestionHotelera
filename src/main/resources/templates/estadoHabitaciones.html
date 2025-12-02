@@ -1,56 +1,34 @@
-<div th:fragment="page-content">
-  <h1>Estado de las Habitaciones</h1>
-   <div class="table-responsive mb-4">
-            <table class="table table-bordered text-center align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width:150px;">Fecha</th>
-                        <th colspan="10">Número de Habitación</th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th>XX</th>
-                        <th>XX</th>
-                        <th>XX</th>
-                        <th>XX</th>
-                        <th>XX</th>
-                        <th>XX</th>
-                        <th>XX</th>
-                        <th>XX</th>
-                        <th>XX</th>
-                        <th>XX</th>
-                    </tr>
-                </thead>
+<div th:fragment="content">
+  <script src="/eventosTabla.js"></script>
+    <table id="tabla-estados" border="1" cellpadding="5" cellspacing="0">
 
-                <tbody>
-                    <!-- Varias filas de ejemplo, vacías -->
-                    <tr>
-                        <td>dd/mm</td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                    </tr>
-                    <tr>
-                        <td>dd/mm</td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                    </tr>
-                    <tr>
-                        <td>dd/mm</td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                    </tr>
-                    <tr>
-                        <td>dd/mm</td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                    </tr>
-                    <tr>
-                        <td>dd/mm</td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                        <td></td><td></td><td></td><td></td><td></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+      <thead>
+        <tr>
+          <th>Fecha</th>
 
+          <th th:if="${mostrarTabla}"
+            th:each="habId : ${tablaEstados[0].estadosPorHabitacion.keySet()}"
+            th:text="'Hab ' + ${habId}">
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr th:each="fila : ${tablaEstados}">
+
+          <td th:text="${#temporals.format(fila.fecha, 'dd/MM/yyyy')}"></td>
+
+          <td 
+          th:each="entry : ${fila.estadosPorHabitacion.entrySet()}"
+          th:style="${entry.value == 'RESERVADA' ? 'color: red;' : 'color: black;'}">
+          <span th:text="${#strings.isEmpty(entry.value) ? 'DISPONIBLE' : entry.value}" ></span>
+          <input type="hidden" th:value="${entry.key}" th:name="${'estado_' + entry.key}"/>
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
 </div>

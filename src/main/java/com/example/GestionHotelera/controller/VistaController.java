@@ -90,18 +90,19 @@ public class VistaController {
     model.addAttribute("viewName", "reservarHabitacion");
     model.addAttribute("tipos", TipoHabitacion.values());
     boolean buscar = tipo != null && fechaInicio != null && fechaFin != null;
+    List<TablaEstadoDTO> tablaEstados = new ArrayList<>();
     if (buscar) {
       System.out.println(fechaInicio);
       List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(TipoHabitacion.valueOf(tipo));
-      List<TablaEstadoDTO> tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, habitaciones);
-      model.addAttribute("tipoSeleccionado", tipo);
-      model.addAttribute("fechaInicioSeleccionada", fechaInicio);
-      model.addAttribute("fechaFinSeleccionada", fechaFin);
+      tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, habitaciones);
       System.out.println(fechaFin);
-      model.addAttribute("tablaEstados", tablaEstados);
       System.out.println(tablaEstados.get(0).getEstadosPorHabitacion());
       model.addAttribute("mostrarTabla", buscar);
     }
+    model.addAttribute("tablaEstados", tablaEstados);
+    model.addAttribute("tipoSeleccionado", tipo);
+    model.addAttribute("fechaInicioSeleccionada", fechaInicio);
+    model.addAttribute("fechaFinSeleccionada", fechaFin);
     return "layout";}
 
   @GetMapping("/huesped/buscar")
