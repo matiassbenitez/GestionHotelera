@@ -1,10 +1,12 @@
 package com.example.GestionHotelera.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.ui.Model;
@@ -111,18 +113,26 @@ public class VistaController {
     return "layout";}
     
     @PostMapping("/habitaciones/reservar")
-    public String procesarReservaHabitacion(Model model,
+    @ResponseBody
+    public ResponseEntity<?> procesarReservaHabitacion(Model model,
       @RequestBody List<datosParaReservaDTO> datosReserva) {
-        for (datosParaReservaDTO datos : datosReserva) {
-          gestionReserva.reservar(datos);
-          Habitacion habitacion = gestionHabitacion.buscarPorNumero(datos.getNumeroHabitacion());
-          gestionEstado.crearEstado(habitacion, datos.getFechaInicio(), datos.getFechaFin());
+        try{
+          for (datosParaReservaDTO datos : datosReserva) {
+            Habitacion habitacion = gestionHabitacion.buscarPorNumero(datos.getNumeroHabitacion());
+            gestionReserva.reservar(datos,habitacion);
+            gestionEstado.crearEstado(habitacion, datos.getFechaInicio(), datos.getFechaFin());
+          }
+          return ResponseEntity.ok().body(java.util.Collections.singletonMap("message", "Reservas procesadas con éxito."));
+          // model.addAttribute("title", "Gestión Hotelera - Home");
+          // model.addAttribute("viewName", "index");
+          // return "layout";
+      } catch (Exception e) {
+        System.err.println("Error al procesar la reserva: " + e.getMessage());
+            return ResponseEntity.badRequest() // Código 400
+                                 .body(java.util.Collections.singletonMap("error", "Error al crear la reserva: " + e.getMessage()));
         }
-        model.addAttribute("title", "Gestión Hotelera - Home");
-        model.addAttribute("viewName", "index");
-        return "layout";
       }
-
+    
   @GetMapping("/huesped/buscar")
   public String mostrarBuscarHuesped(
     @RequestParam(required = false) String apellido,

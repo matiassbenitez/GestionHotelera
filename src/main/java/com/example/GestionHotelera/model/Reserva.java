@@ -1,5 +1,5 @@
 package com.example.GestionHotelera.model;
-import java.util.Date;
+import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -25,13 +24,13 @@ public class Reserva {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private Date fechaReserva;
+  private LocalDate fechaReserva;
   private String nombre;
   private String apellido;
   private String telefono;
-  private Boolean cancelada;
-  private Date ingreso;
-  private Date egreso;
+  private Boolean cancelada = false;
+  private LocalDate ingreso;
+  private LocalDate egreso;
 
   @OneToOne(mappedBy = "reserva")
   private Estadia estadia;
