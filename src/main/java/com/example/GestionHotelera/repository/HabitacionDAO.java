@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface HabitacionDAO extends JpaRepository<Habitacion, Long> {
     public List<Habitacion> findByTipo(TipoHabitacion tipo);
+    public Habitacion findByNumero(int numero);
 }

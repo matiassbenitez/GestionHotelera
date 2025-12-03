@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.GestionHotelera.DTO.TablaEstadoDTO;
 import com.example.GestionHotelera.model.Estado;
+import com.example.GestionHotelera.model.EstadoEnum;
 import com.example.GestionHotelera.model.Habitacion;
 import com.example.GestionHotelera.repository.EstadoDAO;
 
@@ -18,6 +19,15 @@ public class GestionEstado {
   public GestionEstado(EstadoDAO estadoDAOImpl) {
     this.estadoDAOImpl = estadoDAOImpl;
   }
+  public void crearEstado(Habitacion habitacion, LocalDate fechaInicio, LocalDate fechaFin) {
+    Estado nuevoEstado = new Estado();
+    nuevoEstado.setHabitacion(habitacion);
+    nuevoEstado.setFechaInicio(fechaInicio);
+    nuevoEstado.setFechaFin(fechaFin);
+    nuevoEstado.setEstado(EstadoEnum.RESERVADA);
+    estadoDAOImpl.save(nuevoEstado);
+  }
+
   public List<Estado> obtenerEstadosPorFecha(LocalDate fechaInicio, LocalDate fechaFin) {
     //System.out.println("GestionEstado - obtenerEstadosPorFecha: " + fechaInicio + " / " + fechaFin);
     return estadoDAOImpl.findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqual(fechaInicio, fechaFin);
