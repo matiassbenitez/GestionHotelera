@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const botonReservar = document.getElementById("boton-reservar");
   let contador = 0;
   let seleccionados = [];
   let arrayReservas = [];
@@ -82,8 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
               const reserva = [inputOculto1.value, fechaInicial, fechaFinal];
               datosReservas.push(reserva);  // CARGAR DATOS DE PERSONA PARA LA RESERVA, HACER FOR Y CREAR LA LISTA DE OBJETOS
               
-              
-              
               seleccionados = [];
               contador = 0;
             }
@@ -92,4 +91,74 @@ document.addEventListener("DOMContentLoaded", function () {
       }    
     });
   }
+  if (botonReservar) {
+    botonReservar.addEventListener("click", function () {
+        const modalResumen = document.getElementById("modal"); // Tu modal actual (Resumen)
+        const modalBodyResumen = document.getElementById("modalReservasBody");
+        const modalFooterResumen = document.getElementById("modalReservasFooter");
+        
+        // Modal del Cliente
+        const modalCliente = document.getElementById("modal-cliente");
+
+        if (datosReservas.length === 0) {
+            alert("No ha seleccionado ninguna reserva.");
+            return;
+        }
+
+        // --- 1. LLENAR MODAL DE RESUMEN ---
+        modalBodyResumen.innerHTML = '';
+        modalFooterResumen.innerHTML = '';
+        
+        // Llenar el cuerpo con los detalles de las reservas
+        datosReservas.forEach(function (reserva, index) {
+            const [habitacionId, fechaInicio, fechaFin] = reserva;
+            const reservaDiv = document.createElement("div");
+            
+            reservaDiv.classList.add("p-2", "border-start", "border-3", "border-info", "mb-2", "bg-light");
+            
+            reservaDiv.innerHTML = `
+                <p class="mb-0"><strong>Reserva ${index + 1}:</strong> Habitación Nro ${habitacionId}</p>
+                <small class="text-muted">Fechas: ${fechaInicio} al ${fechaFin}</small>
+            `;
+            
+            modalBodyResumen.appendChild(reservaDiv);
+        });
+        
+        // --- 2. CONFIGURAR FOOTER DEL MODAL DE RESUMEN ---
+        
+        // Botón de CERRAR (Cancelar la acción)
+        const botonCerrar = document.createElement("button");
+        botonCerrar.textContent = "Cancelar";
+        botonCerrar.classList.add("btn", "btn-secondary");
+        botonCerrar.setAttribute("data-bs-dismiss", "modal"); 
+
+        // Botón de CONFIRMAR (Avanzar al siguiente modal)
+        const botonConfirmar = document.createElement("button");
+        botonConfirmar.textContent = "Confirmar y Continuar ➡️";
+        botonConfirmar.classList.add("btn", "btn-primary");
+        botonConfirmar.type = "button"; // No es un submit
+        
+        // AÑADIR EL EVENTO PARA MOSTRAR EL SEGUNDO MODAL
+        botonConfirmar.addEventListener("click", function () {
+            // Ocultar el modal de resumen
+            const bsModalResumen = bootstrap.Modal.getInstance(modalResumen);
+            if (bsModalResumen) {
+                bsModalResumen.hide();
+            } else {
+                new bootstrap.Modal(modalResumen).hide();
+            }
+            
+            // Mostrar el modal del cliente
+            const bsModalCliente = new bootstrap.Modal(modalCliente);
+            bsModalCliente.show();
+        });
+
+        modalFooterResumen.appendChild(botonCerrar);
+        modalFooterResumen.appendChild(botonConfirmar);
+        
+        // --- 3. MOSTRAR EL PRIMER MODAL (RESUMEN) ---
+        const bsModalResumen = new bootstrap.Modal(modalResumen);
+        bsModalResumen.show();
+    });
+}
 });
