@@ -1,4 +1,4 @@
-<div th:fragment="page-content">
+<!-- <div th:fragment="page-content">
   <script src="/reservarHabitacion.js" ></script>
   <h1>Reservar Habitaciones</h1>
     <label for="fechaInicio">Fecha de Inicio:</label>
@@ -22,5 +22,116 @@
     </select>
 <div th:if="${mostrarTabla}" >
   <div  th:replace="estadoHabitaciones :: content" ></div>
+</div>
+<button id="boton-reservar">Reservar</button>
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Confirmación de Reservas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalReservasBody">
+                </div>
+            <div class="modal-footer" id="modalReservasFooter">
+                </div>
+        </div>
+    </div>
+</div>
+
+</div> -->
+
+<div th:fragment="page-content">
+    <script src="/reservarHabitacion.js" ></script>
+    
+    <div class="container my-5 p-4 border rounded shadow-lg bg-white"> 
+        
+        <h1 class="mb-4 text-center text-primary border-bottom pb-2">Reservar Habitaciones 🏨</h1>
+        
+        <form class="row g-3 align-items-end mb-4">
+            
+            <div class="col-md-4">
+                <label for="fechaInicio" class="form-label fw-bold">Fecha de Inicio:</label>
+                <input type="date" id="fechaInicio" th:value="${fechaInicioSeleccionada}" name="fechaInicio" required class="form-control">
+            </div>
+            
+            <div class="col-md-4">
+                <label for="fechaFin" class="form-label fw-bold">Fecha de Fin:</label>
+                <input type="date" id="fechaFin" th:value="${fechaFinSeleccionada}" name="fechaFin" required class="form-control">
+            </div>
+            
+            <div class="col-md-4">
+                <label for="tipo" class="form-label fw-bold">Tipo de Habitación</label>
+                <select name="tipo" id="tipo" class="form-select">
+                    <option value="" 
+                            th:if="${tipoSeleccionado == null or tipoSeleccionado == ''}" 
+                            th:text="'Seleccione...'" 
+                            disabled 
+                            selected>
+                    </option>
+                    <option th:each="tipo : ${tipos}"
+                            th:text="${tipo}"
+                            th:value="${tipo}"
+                            th:selected="${tipoSeleccionado != null and tipo.toString() == tipoSeleccionado.toString()}">
+                    </option>
+                </select>
+            </div>
+        </form>
+        
+        <div th:if="${mostrarTabla}" class="mt-4">
+            <div th:replace="estadoHabitaciones :: content" ></div>
+        </div>
+        
+        <div class="d-grid gap-2 col-6 mx-auto mt-5"> 
+            <button id="boton-reservar" class="btn btn-primary btn-lg shadow-sm">Reservar</button>
+        </div>
+    </div>
+    
+    ---
+
+    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered"> 
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white"> 
+                    <h5 class="modal-title" id="modalLabel">Confirmación de Reservas</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalReservasBody">
+                    </div>
+                <div class="modal-footer d-flex justify-content-between" id="modalReservasFooter"> 
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-cliente" tabindex="-1" aria-labelledby="modalClienteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="modalClienteLabel">Datos del Cliente y Confirmación Final</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="form-confirmar-reserva">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre-cliente" class="form-label">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre-cliente" name="nombre"  required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="apellido-cliente" class="form-label">Apellido:</label>
+                        <input type="text" class="form-control" id="apellido-cliente" name="apellido" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefono-cliente" class="form-label">Teléfono:</label>
+                        <input type="text" class="form-control" id="telefono-cliente" name="telefono" required>
+                    </div>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Confirmar y Enviar Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 </div>

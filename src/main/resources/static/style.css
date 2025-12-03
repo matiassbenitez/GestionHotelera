@@ -64,3 +64,34 @@ input:focus {
 .modal-content button {
     flex-grow: 1; 
 }
+
+.estado-cuadro {
+    width: 25px;
+    height: 25px;
+    border: 1px solid #000; /* borde del cuadrado */
+    border-radius: 4px;
+}
+
+.OCUPADA {
+    background-color: red;
+}
+
+.RESERVADA{
+  background-color: yellow;
+} 
+
+.FUERA_DE_SERVICIO {
+  background-color: white; /* blanco o lo que quieras */
+}
+
+.FUERA_DE_SERVICIO::after {
+        content: "✖";  /* equis negra */
+}
+
+.LIBRE {
+    background-color: white;
+}
+
+.seleccion-reserva {
+    background-color: rgb(228, 95, 33);
+}

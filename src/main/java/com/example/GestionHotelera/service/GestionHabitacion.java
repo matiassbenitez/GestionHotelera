@@ -20,5 +20,9 @@ public class GestionHabitacion {
     return habitacionDAOImpl.findByTipo(tipoHabitacion);
   }
 
+  public Habitacion buscarPorNumero(int numero) {
+    return habitacionDAOImpl.findByNumero(numero);
+  }
+
   
 }

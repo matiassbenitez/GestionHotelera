@@ -21,8 +21,8 @@
 
           <td 
           th:each="entry : ${fila.estadosPorHabitacion.entrySet()}"
-          th:style="${entry.value == 'RESERVADA' ? 'color: red;' : 'color: black;'}">
-          <span th:text="${#strings.isEmpty(entry.value) ? 'DISPONIBLE' : entry.value}" ></span>
+          class="estado-cuadro" 
+          th:classappend="${#strings.isEmpty(entry.value) ? 'DISPONIBLE' : entry.value}">
           <input type="hidden" th:value="${entry.key}" th:name="${'estado_' + entry.key}"/>
           </td>
 
