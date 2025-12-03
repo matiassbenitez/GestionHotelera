@@ -22,11 +22,16 @@ function parseDate(dateString) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const botonReservar = document.getElementById("boton-reservar");
+  const modalOcuparIgual = document.getElementById("modal-confirmacion-ocupa");
+  const aviso = document.getElementById("aviso");
+  const botonOcuparIgual = document.getElementById("boton-ocupar-igual");
+  const botonVolver = document.getElementById("btn-volver");
+  
+  //const botonReservar = document.getElementById("boton-reservar");
   let contador = 0;
   let seleccionados = [];
-  let arrayReservas = [];
-  let datosReservas = [];
+  //let arrayReservas = [];
+  //let datosReservas = [];
 
   const tabla = document.getElementById("tabla-estados");
   if (tabla) {
@@ -36,13 +41,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const tdSeleccionado = event.target.closest("td");
       if (tdSeleccionado) {
         seleccionados.push(tdSeleccionado);
-        const inputOculto = tdSeleccionado.querySelector('input[type="hidden"]');
+        //const inputOculto = tdSeleccionado.querySelector('input[type="hidden"]');
         const trPadre = tdSeleccionado.parentElement;
         const firstTd = trPadre.firstElementChild;
         if (firstTd === tdSeleccionado) {
           return;
         }
-        tdSeleccionado.classList.add("seleccion-reserva");
+        tdSeleccionado.classList.add("seleccion-ocupa");
         contador++;
         if (contador == 2) {
           let seleccionado1 = seleccionados[0];
@@ -61,7 +66,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const indiceColumna = seleccionado1.cellIndex;
             const tabla = seleccionado1.closest("table");
             const filas = tabla.rows;
-            let todasDisponibles = true;
+            let permiteSeleccionar = true;
+            let reservadas = false;
             const firstTd1 = seleccionado1.parentElement.firstElementChild;
             const firstTd2 = seleccionado2.parentElement.firstElementChild;
             const fecha1String = firstTd1.textContent.trim('');
@@ -84,20 +90,61 @@ document.addEventListener("DOMContentLoaded", function () {
 
             for (let i = inicio; i <= fin; i++) {
               const celda = filas[i].cells[indiceColumna];
-              if (!celda.classList.contains("LIBRE")) {
-                todasDisponibles = false;
-                alert("Todas las fechas seleccionadas deben estar disponibles.");
+              if (!celda.classList.contains("LIBRE") && !celda.classList.contains("RESERVADA")) {
+                permiteSeleccionar = false;
+                alert("Todas las fechas seleccionadas deben estar disponibles o reservadas.");
                 contador = 0;
-                seleccionado1.classList.remove("seleccion-reserva");
-                seleccionado2.classList.remove("seleccion-reserva");
+                seleccionado1.classList.remove("seleccion-ocupa");
+                seleccionado2.classList.remove("seleccion-ocupa");
                 seleccionados = [];
                 break;
               }
+              if (celda.classList.contains("RESERVADA")) {
+                reservadas = true;
+                permiteSeleccionar = false;
+                break;
+              }
             }
-            if (todasDisponibles) {
+            if (reservadas) {
+              // MOSTRAR MODAL CON PREGUNTA
+              let reservaInfo = '';
+              async function fetchReservaInfo() {
+                const fechaInicial = fechasDesordenadas ? firstTd2.textContent.trim('') : firstTd1.textContent.trim('');
+                const fechaFinal = fechasDesordenadas ? firstTd1.textContent.trim('') : firstTd2.textContent.trim('');
+                const response = await fetch(`/habitaciones/infoReserva?habitacionId=${inputOculto1.value}&fechaInicio=${toISODate(fechaInicial)}&fechaFin=${toISODate(fechaFinal)}`);
+                if (response.ok) {
+                  const data = await response.json();
+                  return data;
+                } else {
+                  console.error('Error al obtener la información de la reserva');
+                  return null;
+                }
+              }
+              fetchReservaInfo().then(data => {
+                if (data) {
+                  reservaInfo = `La habitación ya está reservada por ${data.nombre} ${data.apellido} desde el ${data.fechaInicio} hasta el ${data.fechaFin}. ¿Desea ocuparla igual?`;
+                  const modalBody = aviso.querySelector(".modal-body");
+                  modalBody.textContent = reservaInfo;
+                }
+              });
+              const bsModalOcuparIgual = new bootstrap.Modal(modalOcuparIgual);
+              bsModalOcuparIgual.show();
+              botonOcuparIgual.addEventListener("click", function () {
+                bsModalOcuparIgual.hide();
+                permiteSeleccionar = true;
+              }); 
+              botonVolver.addEventListener("click", function () {
+                contador = 0;
+                seleccionado1.classList.remove("seleccion-ocupa");
+                seleccionado2.classList.remove("seleccion-ocupa");
+                seleccionados = [];
+                bsModalOcuparIgual.hide();
+              });
+            }
+            if (permiteSeleccionar) {
               for (let i = ++inicio; i < fin; i++) {
                 const celda = filas[i].cells[indiceColumna];
-                celda.classList.add("seleccion-reserva");
+                celda.classList.add("seleccion-ocupa");
               }
               let fechaInicial = ''
               let fechaFinal = ''
@@ -108,9 +155,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 fechaInicial = firstTd1.textContent.trim('');
                 fechaFinal = firstTd2.textContent.trim('');
               }
-              const reserva = [inputOculto1.value, fechaInicial, fechaFinal];
-              datosReservas.push(reserva);  // CARGAR DATOS DE PERSONA PARA LA RESERVA, HACER FOR Y CREAR LA LISTA DE OBJETOS
-              console.log("Datos de reservas:", datosReservas);
+              //const reserva = [inputOculto1.value, fechaInicial, fechaFinal];
+              //datosReservas.push(reserva);  // CARGAR DATOS DE PERSONA PARA LA RESERVA, HACER FOR Y CREAR LA LISTA DE OBJETOS
+             // console.log("Datos de reservas:", datosReservas);
               seleccionados = [];
               contador = 0;
             }
@@ -250,6 +297,7 @@ function enviarReservasAlServidor(arrayReservas) {
       console.log('Reservas confirmadas:', data);
       // Aquí puedes manejar la respuesta del servidor, como mostrar un mensaje de éxito
       alert("Reservas confirmadas con éxito.");
+      window.location.href = "/";
     })
     .catch(error => {
       console.error('Error al confirmar las reservas:', error);
