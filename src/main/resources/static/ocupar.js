@@ -5,18 +5,46 @@ document.addEventListener("DOMContentLoaded", function () {
   const botonSalir = document.getElementById("btn-salir");
   const queryString = window.location.search; 
   const urlParams = new URLSearchParams(queryString);
+  const botonAceptar = document.getElementById("btn-aceptar");
 
   const nroHabitacion = urlParams.get('numeroHabitacion');
-    const fechaInicio = urlParams.get('fechaInicio');
+  const fechaInicio = urlParams.get('fechaInicio');
+  const fechaFin = urlParams.get('fechaFin');
 
-  botonCargarOtra.addEventListener("click", function () {
-    acciones.hide();
-  });
-  botonSalir.addEventListener("click", function () {
-    window.location.href = "/";
-  });
   botonSeguir.addEventListener("click", function () {
     acciones.hide();
+  });
+  botonCargarOtra.addEventListener("click", function () {
+    acciones.hide();
+    const cargaOtraUrl = `/habitacion/cambiarEstado?numeroHabitacion=${nroHabitacion}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&cargarOtro=true`;
+    fetch(cargaOtraUrl, {
+      method: 'POST'
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.error('Error al cambiar el estado de la habitación');
+      }
+    })
+    .catch(error => {
+      console.error('Error en la solicitud:', error);
+    });
+
+  });
+  botonSalir.addEventListener("click", function () {
+    acciones.hide();
+    const ocuparUrl = `/habitacion/cambiarEstado?numeroHabitacion=${nroHabitacion}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&salir=true`;
+    fetch(ocuparUrl, {
+      method: 'POST'
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.error('Error al cambiar el estado de la habitación');
+      }
+    })
+    .catch(error => {
+      console.error('Error en la solicitud:', error);
+    });
+
   });
 
   let preguntar = document.getElementById("url").getAttribute("preguntar");
@@ -41,4 +69,21 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
+  botonAceptar.addEventListener("click", function () {
+    if (selectedHuesped) {
+      const idHuesped = selectedHuesped.getAttribute("data-id-huesped");
+      const ocuparUrl = `/huesped/ocuparHabitacion?idHuesped=${idHuesped}&numeroHabitacion=${nroHabitacion}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+      fetch(ocuparUrl, {
+        method: 'POST'
+      })
+      .then(response => {
+        if (!response.ok) {
+          console.error('Error al ocupar la habitación');
+        }
+      })
+      .catch(error => {
+        console.error('Error en la solicitud:', error);
+      });
+    }
+  });
 });

@@ -247,18 +247,41 @@ public class VistaController {
       
       }
 
-
-      @PostMapping("/habitacion/cambiarEstado")
-      @ResponseBody
-      public String guardarEstadoHabitacion(
-        @RequestParam Integer numeroHabitacion,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
-        gestionEstado.crearEstadoOcupada(numeroHabitacion, fechaInicio, fechaFin);
+    @PostMapping("/habitacion/cambiarEstado")
+    public String guardarEstadoHabitacion(Model model,
+      @RequestParam Integer numeroHabitacion,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+      //@RequestParam(required = false) boolean seguir,
+      @RequestParam(required = false) boolean cargarOtro, 
+      @RequestParam(required = false) boolean salir)
+      {
+      if (cargarOtro || salir){
+        Habitacion habitacion = gestionHabitacion.buscarPorNumero(numeroHabitacion);
+        gestionEstado.crearEstadoOcupado(habitacion, fechaInicio, fechaFin);
+        if (salir){
+          model.addAttribute("title", "Gestión Hotelera - Home");
+          model.addAttribute("viewName", "index");
+          return "layout";
+        } else {
+          model.addAttribute("title", "Ocupar Habitacion");
+          model.addAttribute("viewName", "ocuparHabitacion");
+          return "layout";
+        }
       }
+      
+      // if (seguir){
+      //    return "redirect:/huesped/buscarOcupantes?preguntar=false&numeroHabitacion=" + numeroHabitacion + "&fechaInicio=" + fechaInicio + "&fechaFin=" + fechaFin;
+      
+      // }
+      model.addAttribute("title", "Gestión Hotelera - Home");
+      model.addAttribute("viewName", "index");
+      return "layout";
+    }
 
   @GetMapping("/habitacion/ocupar")
   public String mostrarOcuparHabitacion(Model model) {
+    model.addAttribute("tipos", TipoHabitacion.values());
     model.addAttribute("title", "Ocupar Habitacion");
     model.addAttribute("viewName", "ocuparHabitacion");
     return "layout";}

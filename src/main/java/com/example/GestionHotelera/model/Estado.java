@@ -1,5 +1,7 @@
 package com.example.GestionHotelera.model;
 import java.time.LocalDate;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,6 +29,9 @@ public class Estado {
   private Long id;
   private LocalDate fechaInicio;
   private LocalDate fechaFin;
+
+  @Column(nullable = false)
+  private boolean eliminado = false;
 
   @Enumerated(EnumType.STRING)
   private EstadoEnum estado;

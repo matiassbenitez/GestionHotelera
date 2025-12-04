@@ -30,7 +30,7 @@ public class GestionEstado {
 
   public List<Estado> obtenerEstadosPorFecha(LocalDate fechaInicio, LocalDate fechaFin) {
     //System.out.println("GestionEstado - obtenerEstadosPorFecha: " + fechaInicio + " / " + fechaFin);
-    return estadoDAOImpl.findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqual(fechaInicio, fechaFin);
+    return estadoDAOImpl.findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqualAndEliminadoFalse(fechaInicio, fechaFin);
   }
   public List<TablaEstadoDTO> generarTablaEstados(LocalDate fechaInicio, LocalDate fechaFin, List<Habitacion> habitaciones) {
     List<TablaEstadoDTO> tablaEstados = new ArrayList<>();
@@ -62,6 +62,20 @@ public class GestionEstado {
     //System.out.println("cantidad de estados: " + tablaEstados.size());
     return tablaEstados;
   }
-  
-  
+
+  public void crearEstadoOcupado(Habitacion habitacion, LocalDate fechaInicio, LocalDate fechaFin) {
+    List<Estado> estadosExistentes = estadoDAOImpl.findByHabitacion_NumeroAndFechaInicioLessThanEqualAndFechaFinGreaterThanEqualAndEliminadoFalse(habitacion.getNumero(), fechaFin, fechaInicio);
+    for (Estado estado : estadosExistentes) {
+      estado.setEliminado(true);
+      estadoDAOImpl.save(estado);
+    }
+    Estado nuevoEstado = new Estado();
+    nuevoEstado.setHabitacion(habitacion);
+    nuevoEstado.setFechaInicio(fechaInicio);
+    nuevoEstado.setFechaFin(fechaFin);
+    nuevoEstado.setEstado(EstadoEnum.OCUPADA);
+    nuevoEstado.setEliminado(false);
+    estadoDAOImpl.save(nuevoEstado);
+  }
+
 }

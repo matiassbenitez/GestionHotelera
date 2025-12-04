@@ -11,14 +11,14 @@ function toISODate(dateString) {
 }
 
 function parseDate(dateString) {
-    if (!dateString) return null;
-    
-    // Asume formato DD/MM/YYYY
-    const parts = dateString.split('/');
-    
-    // Crea un objeto Date usando YYYY, MM-1 (meses son 0-indexados) y DD
-    // parts[2] = YYYY, parts[1] = MM, parts[0] = DD
-    return new Date(parts[2], parts[1] - 1, parts[0]); 
+  if (!dateString) return null;
+
+  // Asume formato DD/MM/YYYY
+  const parts = dateString.split('/');
+
+  // Crea un objeto Date usando YYYY, MM-1 (meses son 0-indexados) y DD
+  // parts[2] = YYYY, parts[1] = MM, parts[0] = DD
+  return new Date(parts[2], parts[1] - 1, parts[0]);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -27,12 +27,36 @@ document.addEventListener("DOMContentLoaded", function () {
   const botonOcuparIgual = document.getElementById("btn-ocupar-igual");
   const botonVolver = document.getElementById("btn-volver");
   const modalAviso = document.getElementById("aviso");
+  const bsModalAviso = new bootstrap.Modal(modalAviso);
   
+  let inputOcultoValor = ''
+  let fechaInicioSeleccionada = '';
+  let fechaFinSeleccionada = '';
+
   //const botonReservar = document.getElementById("boton-reservar");
   let contador = 0;
   let seleccionados = [];
   //let arrayReservas = [];
   //let datosReservas = [];
+  
+  // modalAviso.addEventListener('hidden.bs.modal', function () {
+  //   const reserva = [inputOcultoValor, fechaInicioSeleccionada, fechaFinSeleccionada];
+  //   console.log("fechas:" + fechaInicioSeleccionada + " - " + fechaFinSeleccionada);
+  // });
+  
+  document.addEventListener('keydown', function (event) {
+    const modalVisible = modalAviso.classList.contains('show');
+    if (modalVisible) {
+      event.preventDefault();
+      fetch(`/huesped/buscarOcupantes?preguntar=false&numeroHabitacion=${inputOcultoValor}&fechaInicio=${toISODate(fechaInicioSeleccionada)}&fechaFin=${toISODate(fechaFinSeleccionada)}`);
+      window.location.href = `/huesped/buscarOcupantes?preguntar=false&numeroHabitacion=${inputOcultoValor}&fechaInicio=${toISODate(fechaInicioSeleccionada)}&fechaFin=${toISODate(fechaFinSeleccionada)}`;
+      //bsModalAviso.hide();
+      // const botonCerrar = modalAviso.querySelector('[data-bs-dismiss="modal"]');
+      // if (botonCerrar) {
+      //   botonCerrar.click();
+      // }
+    }
+  });
 
   const tabla = document.getElementById("tabla-estados");
   if (tabla) {
@@ -51,13 +75,13 @@ document.addEventListener("DOMContentLoaded", function () {
         tdSeleccionado.classList.add("seleccion-ocupa");
         contador++;
         if (contador == 2) {
-          const bsModalAviso = new bootstrap.Modal(modalAviso);
           let seleccionado1 = seleccionados[0];
           let seleccionado2 = seleccionados[1];
           console.log(seleccionado1);
           console.log(seleccionado2);
           const inputOculto1 = seleccionado1.querySelector('input[type="hidden"]');
           const inputOculto2 = seleccionado2.querySelector('input[type="hidden"]');
+          inputOcultoValor = inputOculto1
           if (inputOculto1.value != inputOculto2.value) { // Habitaciones diferentes
             contador = 0;
             seleccionado1.classList.remove("seleccion-reserva");
@@ -125,9 +149,9 @@ document.addEventListener("DOMContentLoaded", function () {
               fetchReservaInfo().then(data => {
                 if (data && data.length > 0) {
                   data.forEach(reserva => {
-                  reservaInfo = `La habitación está reservada por ${reserva.nombre} ${reserva.apellido} desde el ${reserva.fechaInicio} hasta el ${reserva.fechaFin}. ¿Desea ocuparla igual?`;
-                  const modalBody = aviso.querySelector(".modal-body");
-                  modalBody.textContent = reservaInfo;
+                    reservaInfo = `La habitación está reservada por ${reserva.nombre} ${reserva.apellido} desde el ${reserva.fechaInicio} hasta el ${reserva.fechaFin}. ¿Desea ocuparla igual?`;
+                    const modalBody = aviso.querySelector(".modal-body");
+                    modalBody.textContent = reservaInfo;
                   });
                 }
               });
@@ -136,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
               botonOcuparIgual.addEventListener("click", function () {
                 bsModalOcuparIgual.hide();
                 permiteSeleccionar = true;
-              }); 
+              });
               botonVolver.addEventListener("click", function () {
                 contador = 0;
                 seleccionado1.classList.remove("seleccion-ocupa");
@@ -159,13 +183,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 fechaInicial = firstTd1.textContent.trim('');
                 fechaFinal = firstTd2.textContent.trim('');
               }
+              fechaInicioSeleccionada = fechaInicial
+              fechaFinSeleccionada = fechaFinal
+              inputOcultoValor = inputOculto1.value;
               bsModalAviso.show();
-              bsModalAviso.addEventListener('keydown', function () {
-                bsModalAviso.hide();
-
-                const reserva = [inputOculto1.value, fechaInicial, fechaFinal];
-                fetch(`/habitaciones/buscarOcupantes/preguntar=false&numeroHabitacion=${inputOculto1.value}&fechaInicio=${toISODate(fechaInicial)}&fechaFin=${toISODate(fechaFinal)}`);
-                });
               //datosReservas.push(reserva);  // CARGAR DATOS DE PERSONA PARA LA RESERVA, HACER FOR Y CREAR LA LISTA DE OBJETOS
               // console.log("Datos de reservas:", datosReservas);
               seleccionados = [];
@@ -179,138 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalResumen = document.getElementById("modal"); // Tu modal actual (Resumen)
   const modalBodyResumen = document.getElementById("modalReservasBody");
   const modalFooterResumen = document.getElementById("modalReservasFooter");
-  //const formulario = document.getElementById("form-confirmar-reserva");
 
-  // formulario.addEventListener("submit", function (e) {
-  //   e.preventDefault(); // Prevenir el envío por defecto
-  //   const formData = new FormData(e.target);
-  //   const clienteDatos = {};
-  //   console.log("Datos del formulario de cliente:" , Array.from(formData.entries()));
-  //   for (const [key, value] of formData.entries()) {
-  //     // 'key' será el atributo 'name' del input (ej: 'nombre', 'apellido')
-  //     // 'value' será el texto que el usuario escribió
-  //     clienteDatos[key] = value;
-  //     console.log(`Clave: ${key}, Valor: ${value}`);
-  //   }
-
-  //   datosReservas.forEach((reserva) => {
-  //     console.log("feacha a iso:", toISODate(reserva[1]));
-  //     const reservaCompleta = {
-  //       numeroHabitacion: reserva[0],
-  //       fechaInicio: toISODate(reserva[1]),
-  //       fechaFin: toISODate(reserva[2]),
-  //       nombre: clienteDatos['nombre'],
-  //       apellido: clienteDatos['apellido'],
-  //       telefono: clienteDatos['telefono']
-  //     };
-  //     arrayReservas.push(reservaCompleta);
-  //   });
-  //   console.log("Reservas a enviar al servidor:", arrayReservas);
-  //   enviarReservasAlServidor(arrayReservas);
-  // });
-
-  // Modal del Cliente
   const modalCliente = document.getElementById("modal-cliente");
 
-  // if (botonReservar) {
-  //   botonReservar.addEventListener("click", function () {
-
-  //     if (datosReservas.length === 0) {
-  //       alert("No ha seleccionado ninguna reserva.");
-  //       return;
-  //     }
-
-  //     // --- 1. LLENAR MODAL DE RESUMEN ---
-  //     modalBodyResumen.innerHTML = '';
-  //     modalFooterResumen.innerHTML = '';
-
-  //     // Llenar el cuerpo con los detalles de las reservas
-  //     datosReservas.forEach(function (reserva, index) {
-  //       const [habitacionId, fechaInicio, fechaFin] = reserva;
-  //       const reservaDiv = document.createElement("div");
-
-  //       reservaDiv.classList.add("p-2", "border-start", "border-3", "border-info", "mb-2", "bg-light");
-
-  //       reservaDiv.innerHTML = `
-  //               <p class="mb-0"><strong>Reserva ${index + 1}:</strong> Habitación Nro ${habitacionId}</p>
-  //               <small class="text-muted">Fechas: ${fechaInicio} al ${fechaFin}</small>
-  //           `;
-
-  //       modalBodyResumen.appendChild(reservaDiv);
-  //     });
-
-  //     // --- 2. CONFIGURAR FOOTER DEL MODAL DE RESUMEN ---
-
-  //     // Botón de CERRAR (Cancelar la acción)
-  //     const botonCerrar = document.createElement("button");
-  //     botonCerrar.textContent = "Cancelar";
-  //     botonCerrar.classList.add("btn", "btn-secondary");
-  //     botonCerrar.setAttribute("data-bs-dismiss", "modal");
-
-  //     // Botón de CONFIRMAR (Avanzar al siguiente modal)
-  //     const botonConfirmar = document.createElement("button");
-  //     botonConfirmar.textContent = "Confirmar y Continuar ➡️";
-  //     botonConfirmar.classList.add("btn", "btn-primary");
-  //     botonConfirmar.type = "button"; // No es un submit
-
-  //     // AÑADIR EL EVENTO PARA MOSTRAR EL SEGUNDO MODAL
-  //     botonConfirmar.addEventListener("click", function () {
-  //       // Ocultar el modal de resumen
-  //       const bsModalResumen = bootstrap.Modal.getInstance(modalResumen);
-  //       if (bsModalResumen) {
-  //         bsModalResumen.hide();
-  //       } else {
-  //         new bootstrap.Modal(modalResumen).hide();
-  //       }
-
-  //       // Mostrar el modal del cliente
-  //       const bsModalCliente = new bootstrap.Modal(modalCliente);
-  //       bsModalCliente.show();
-
-  //     });
-
-  //     modalFooterResumen.appendChild(botonCerrar);
-  //     modalFooterResumen.appendChild(botonConfirmar);
-
-  //     // --- 3. MOSTRAR EL PRIMER MODAL (RESUMEN) ---
-  //     const bsModalResumen = new bootstrap.Modal(modalResumen);
-  //     bsModalResumen.show();
-
-  //   });
-  // }
 });
-
-// function enviarReservasAlServidor(arrayReservas) {
-//   const reservasJSON = JSON.stringify(arrayReservas);
-//   fetch('/habitaciones/reservar', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: reservasJSON
-//   })
-//     .then(response => {
-//       if (response.ok) {
-//         return response.json();
-//       } else {
-
-//        return response.text().then(text => {
-//                 // Si el texto es HTML, aquí lo capturaremos.
-//                 console.error("Respuesta de error no JSON del servidor:", text);
-                
-//                 // Lanzar un error para ir al bloque .catch
-//                 throw new Error(`Error ${response.status}: El servidor devolvió una página de error (HTML).`);
-//             });
-//       }
-//     })
-//     .then(data => {
-//       console.log('Reservas confirmadas:', data);
-//       // Aquí puedes manejar la respuesta del servidor, como mostrar un mensaje de éxito
-//       alert("Reservas confirmadas con éxito.");
-//       window.location.href = "/";
-//     })
-//     .catch(error => {
-//       console.error('Error al confirmar las reservas:', error);
-//       alert("Hubo un error al confirmar las reservas. Por favor, inténtelo de nuevo.");
-//     });
-// }
