@@ -2,13 +2,23 @@ let currentSortColumn = null;
 let currentSortOrder = 'asc';
 
 document.addEventListener("DOMContentLoaded", function() {
+   const urlDiv = document.getElementById("url");
     const form = document.querySelector("form");
     const encabezados = document.querySelectorAll(".fila-encabezados div");
+    const urlParams = new URLSearchParams(window.location.search);
     console.log("Encabezados encontrados:", encabezados);
     
     form.addEventListener("submit", function(event) {
         event.preventDefault();
-        const url = "/huesped/buscar?buscar=true"
+        let url = '';
+        if (urlDiv.textContent === 'buscarOcupantes') {
+          
+          console.log("Buscar OCUPANTES");
+          url = `/huesped/${urlDiv.textContent}?numeroHabitacion=${urlParams.get('numeroHabitacion')}&fechaInicio=${urlParams.get('fechaInicio')}&fechaFin=${urlParams.get('fechaFin')}&buscar=true`
+        } else {
+          console.log("Buscar HUESPEDES");
+          url = `/huesped/${urlDiv.textContent}?buscar=true`
+        }
         const apellido = document.getElementById("apellido").value;
         const nombre = document.getElementById("nombre").value;
         const tipo = document.getElementById("tipoDoc").value;

@@ -1,6 +1,7 @@
 <div th:fragment="page-content">
+  <script src="/ocupar.js"></script>
     <script src="/buscarHuesped.js"></script>
-    <div hidden id="url" >buscar</div>
+    <div hidden id="url" th:attr="preguntar=${preguntar}" >buscarOcupantes</div>
     <div class="container my-5">
         <div class="card shadow p-4 mx-auto" style="max-width: 1200px">
             <!-- Título -->
@@ -94,6 +95,7 @@
                             th:each="huesped : ${resultados}"
                             class="row py-2 border-bottom g-0"
                         >
+                            <div hidden th:text="${huesped.id}"></div>
                             <div class="col-3" th:text="${huesped.apellido}">
                                 Apellido
                             </div>
@@ -115,12 +117,65 @@
                         </li>
                     </ul>
                 </div>
-            </div>
-
-            <!-- Botón siguiente -->
-            <div class="text-end">
-                <button class="btn btn-primary">Siguiente</button>
+                <button id="btn-aceptar" class="btn btn-primary" type="button">Aceptar</button>
             </div>
         </div>
     </div>
+    <div
+    class="modal fade"
+    id="modalAcciones" tabindex="-1"
+    aria-labelledby="modalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalLabel">Seleccionar Acción</h5>
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+
+            <div class="modal-body text-center" id="modalAccionesBody">
+                <p class="lead fw-bold mb-0">
+                    ¿Qué desea hacer a continuación?
+                </p>
+            </div>
+
+            <div
+                class="modal-footer d-flex justify-content-between" id="modalAccionesFooter"
+            >
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btn-seguir"
+                    data-bs-dismiss="modal" 
+                >
+                    SEGUIR CARGANDO
+                </button>
+                
+                <button
+                    type="button"
+                    class="btn btn-warning"
+                    id="btn-otra-habitacion"
+                    data-bs-dismiss="modal" 
+                >
+                    CARGAR OTRA HABITACIÓN
+                </button>
+                
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="btn-salir"
+                    data-bs-dismiss="modal" 
+                >
+                    SALIR
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

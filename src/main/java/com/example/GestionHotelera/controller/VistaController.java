@@ -1,5 +1,6 @@
 package com.example.GestionHotelera.controller;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -133,6 +134,42 @@ public class VistaController {
         }
       }
     
+      @GetMapping("/habitaciones/infoReserva")
+      @ResponseBody
+      public List<datosParaReservaDTO> obtenerInfoReserva(
+        @RequestParam String numeroHabitacion,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio) {
+          Habitacion habitacion = gestionHabitacion.buscarPorNumero(Integer.parseInt(numeroHabitacion));
+          List<datosParaReservaDTO> infoReserva = gestionReserva.obtenerInfoReserva(habitacion, fechaFin, fechaInicio);
+          return infoReserva;
+      }
+
+      @GetMapping("/habitaciones/ocupar")
+  public String mostrarOcuparHabitacion(Model model,
+    @RequestParam(required = false) LocalDate fechaInicio,
+    @RequestParam(required = false) LocalDate fechaFin,
+    @RequestParam(required = false) String tipo)
+    {
+    model.addAttribute("title", "Ocupar Habitaciones");
+    model.addAttribute("viewName", "ocuparHabitacion");
+    model.addAttribute("tipos", TipoHabitacion.values());
+    boolean buscar = tipo != null && fechaInicio != null && fechaFin != null;
+    List<TablaEstadoDTO> tablaEstados = new ArrayList<>();
+    if (buscar) {
+      System.out.println(fechaInicio);
+      List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(TipoHabitacion.valueOf(tipo));
+      tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, habitaciones);
+      System.out.println(fechaFin);
+      System.out.println(tablaEstados.get(0).getEstadosPorHabitacion());
+      model.addAttribute("mostrarTabla", buscar);
+    }
+    model.addAttribute("tablaEstados", tablaEstados);
+    model.addAttribute("tipoSeleccionado", tipo);
+    model.addAttribute("fechaInicioSeleccionada", fechaInicio);
+    model.addAttribute("fechaFinSeleccionada", fechaFin);
+    return "layout";}
+
   @GetMapping("/huesped/buscar")
   public String mostrarBuscarHuesped(
     @RequestParam(required = false) String apellido,
@@ -162,11 +199,93 @@ public class VistaController {
     model.addAttribute("viewName", "buscarHuesped");
     return "layout";}
 
+    @GetMapping("/huesped/buscarOcupantes")
+  public String mostrarBuscarOcupantes(
+    @RequestParam(required = false) Boolean preguntar,
+    @RequestParam(required = false) Integer numeroHabitacion,
+    @RequestParam(required = false) LocalDate fechaInicio,
+    @RequestParam(required = false) LocalDate fechaFin,
+    @RequestParam(required = false) String apellido,
+    @RequestParam(required = false) String nombre,
+    @RequestParam(required = false) String tipo,
+    @RequestParam(required = false) String dni,
+    @RequestParam(required = false) String buscar,
+    Model model) {
+    List<Huesped> resultados = new ArrayList<>();
+    boolean busquedaRealizada = (buscar != null && buscar.equals("true"));
+    if (busquedaRealizada) {
+      resultados = gestionHuesped.buscarHuespedesPorCriterios(apellido, nombre, tipo, dni);
+      System.out.println("Resultados encontrados: " + resultados);
+    }
+    if (resultados.isEmpty() && busquedaRealizada) {
+      model.addAttribute("title", "Dar de alta Huesped");
+      model.addAttribute("viewName", "altaHuesped");
+      return "redirect:/huesped/crear";
+    }
+    model.addAttribute("resultados", resultados);
+    model.addAttribute("mostrarResultados", busquedaRealizada);
+    model.addAttribute("apellido", apellido);
+    model.addAttribute("nombre", nombre);
+    model.addAttribute("tipo", tipo);
+    model.addAttribute("nroDoc", dni);
+    model.addAttribute("title", "Buscar Ocupante");
+    model.addAttribute("viewName", "buscarOcupantes");
+    return "layout";}
+
+    @PostMapping("huesped/buscarOcupantes")
+    @ResponseBody
+    public String procesarOcuparHabitacion(Model model,
+      @RequestBody Long idHuesped,
+      @RequestBody Integer numeroHabitacion,
+      @RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+      @RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+        
+        Huesped huesped = gestionHuesped.buscarPorId(idHuesped);
+        Habitacion habitacion = gestionHabitacion.buscarPorNumero(numeroHabitacion);
+        huesped.setHabitacion(habitacion);
+        return "redirect:/huesped/buscarOcupantes?preguntar=true&numeroHabitacion=" + numeroHabitacion + "&fechaInicio=" + fechaInicio + "&fechaFin=" + fechaFin;
+      
+      }
+
+    @PostMapping("/habitacion/cambiarEstado")
+    public String guardarEstadoHabitacion(Model model,
+      @RequestParam Integer numeroHabitacion,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+      //@RequestParam(required = false) boolean seguir,
+      @RequestParam(required = false) boolean cargarOtro, 
+      @RequestParam(required = false) boolean salir)
+      {
+      if (cargarOtro || salir){
+        Habitacion habitacion = gestionHabitacion.buscarPorNumero(numeroHabitacion);
+        gestionEstado.crearEstadoOcupado(habitacion, fechaInicio, fechaFin);
+        if (salir){
+          model.addAttribute("title", "Gestión Hotelera - Home");
+          model.addAttribute("viewName", "index");
+          return "layout";
+        } else {
+          model.addAttribute("title", "Ocupar Habitacion");
+          model.addAttribute("viewName", "ocuparHabitacion");
+          return "layout";
+        }
+      }
+      
+      // if (seguir){
+      //    return "redirect:/huesped/buscarOcupantes?preguntar=false&numeroHabitacion=" + numeroHabitacion + "&fechaInicio=" + fechaInicio + "&fechaFin=" + fechaFin;
+      
+      // }
+      model.addAttribute("title", "Gestión Hotelera - Home");
+      model.addAttribute("viewName", "index");
+      return "layout";
+    }
 
   @GetMapping("/habitacion/ocupar")
   public String mostrarOcuparHabitacion(Model model) {
+    model.addAttribute("tipos", TipoHabitacion.values());
     model.addAttribute("title", "Ocupar Habitacion");
     model.addAttribute("viewName", "ocuparHabitacion");
     return "layout";}
+
+    
   
 }

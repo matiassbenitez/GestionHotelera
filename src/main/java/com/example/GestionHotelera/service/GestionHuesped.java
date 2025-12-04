@@ -117,4 +117,8 @@ public class GestionHuesped {
     return huespedDAOImpl.findAll(spec);
   }
 
+  public Huesped buscarPorId(Long id) {
+    return huespedDAOImpl.findById(id).orElse(null);
+  }
+
 }
