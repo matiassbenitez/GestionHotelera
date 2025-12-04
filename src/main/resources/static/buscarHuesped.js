@@ -2,13 +2,14 @@ let currentSortColumn = null;
 let currentSortOrder = 'asc';
 
 document.addEventListener("DOMContentLoaded", function() {
+   const urlDiv = document.getElementById("url");
     const form = document.querySelector("form");
     const encabezados = document.querySelectorAll(".fila-encabezados div");
     console.log("Encabezados encontrados:", encabezados);
     
     form.addEventListener("submit", function(event) {
         event.preventDefault();
-        const url = "/huesped/buscar?buscar=true"
+        const url = `/huesped/${urlDiv.textContent}?buscar=true`
         const apellido = document.getElementById("apellido").value;
         const nombre = document.getElementById("nombre").value;
         const tipo = document.getElementById("tipoDoc").value;

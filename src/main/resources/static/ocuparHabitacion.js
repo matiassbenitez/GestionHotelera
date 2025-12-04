@@ -24,8 +24,9 @@ function parseDate(dateString) {
 document.addEventListener("DOMContentLoaded", function () {
   const modalOcuparIgual = document.getElementById("modal-confirmacion-ocupa");
   const aviso = document.getElementById("aviso");
-  const botonOcuparIgual = document.getElementById("boton-ocupar-igual");
+  const botonOcuparIgual = document.getElementById("btn-ocupar-igual");
   const botonVolver = document.getElementById("btn-volver");
+  const modalAviso = document.getElementById("aviso");
   
   //const botonReservar = document.getElementById("boton-reservar");
   let contador = 0;
@@ -50,6 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
         tdSeleccionado.classList.add("seleccion-ocupa");
         contador++;
         if (contador == 2) {
+          const bsModalAviso = new bootstrap.Modal(modalAviso);
           let seleccionado1 = seleccionados[0];
           let seleccionado2 = seleccionados[1];
           console.log(seleccionado1);
@@ -111,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
               async function fetchReservaInfo() {
                 const fechaInicial = fechasDesordenadas ? firstTd2.textContent.trim('') : firstTd1.textContent.trim('');
                 const fechaFinal = fechasDesordenadas ? firstTd1.textContent.trim('') : firstTd2.textContent.trim('');
-                const response = await fetch(`/habitaciones/infoReserva?habitacionId=${inputOculto1.value}&fechaInicio=${toISODate(fechaInicial)}&fechaFin=${toISODate(fechaFinal)}`);
+                const response = await fetch(`/habitaciones/infoReserva?numeroHabitacion=${inputOculto1.value}&fechaInicio=${toISODate(fechaInicial)}&fechaFin=${toISODate(fechaFinal)}`);
                 if (response.ok) {
                   const data = await response.json();
                   return data;
@@ -121,10 +123,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
               }
               fetchReservaInfo().then(data => {
-                if (data) {
-                  reservaInfo = `La habitación ya está reservada por ${data.nombre} ${data.apellido} desde el ${data.fechaInicio} hasta el ${data.fechaFin}. ¿Desea ocuparla igual?`;
+                if (data && data.length > 0) {
+                  data.forEach(reserva => {
+                  reservaInfo = `La habitación está reservada por ${reserva.nombre} ${reserva.apellido} desde el ${reserva.fechaInicio} hasta el ${reserva.fechaFin}. ¿Desea ocuparla igual?`;
                   const modalBody = aviso.querySelector(".modal-body");
                   modalBody.textContent = reservaInfo;
+                  });
                 }
               });
               const bsModalOcuparIgual = new bootstrap.Modal(modalOcuparIgual);
@@ -155,9 +159,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 fechaInicial = firstTd1.textContent.trim('');
                 fechaFinal = firstTd2.textContent.trim('');
               }
-              //const reserva = [inputOculto1.value, fechaInicial, fechaFinal];
+              bsModalAviso.show();
+              bsModalAviso.addEventListener('keydown', function () {
+                bsModalAviso.hide();
+
+                const reserva = [inputOculto1.value, fechaInicial, fechaFinal];
+                fetch(`/habitaciones/buscarOcupantes/preguntar=false&numeroHabitacion=${inputOculto1.value}&fechaInicio=${toISODate(fechaInicial)}&fechaFin=${toISODate(fechaFinal)}`);
+                });
               //datosReservas.push(reserva);  // CARGAR DATOS DE PERSONA PARA LA RESERVA, HACER FOR Y CREAR LA LISTA DE OBJETOS
-             // console.log("Datos de reservas:", datosReservas);
+              // console.log("Datos de reservas:", datosReservas);
               seleccionados = [];
               contador = 0;
             }
@@ -169,138 +179,138 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalResumen = document.getElementById("modal"); // Tu modal actual (Resumen)
   const modalBodyResumen = document.getElementById("modalReservasBody");
   const modalFooterResumen = document.getElementById("modalReservasFooter");
-  const formulario = document.getElementById("form-confirmar-reserva");
+  //const formulario = document.getElementById("form-confirmar-reserva");
 
-  formulario.addEventListener("submit", function (e) {
-    e.preventDefault(); // Prevenir el envío por defecto
-    const formData = new FormData(e.target);
-    const clienteDatos = {};
-    console.log("Datos del formulario de cliente:" , Array.from(formData.entries()));
-    for (const [key, value] of formData.entries()) {
-      // 'key' será el atributo 'name' del input (ej: 'nombre', 'apellido')
-      // 'value' será el texto que el usuario escribió
-      clienteDatos[key] = value;
-      console.log(`Clave: ${key}, Valor: ${value}`);
-    }
+  // formulario.addEventListener("submit", function (e) {
+  //   e.preventDefault(); // Prevenir el envío por defecto
+  //   const formData = new FormData(e.target);
+  //   const clienteDatos = {};
+  //   console.log("Datos del formulario de cliente:" , Array.from(formData.entries()));
+  //   for (const [key, value] of formData.entries()) {
+  //     // 'key' será el atributo 'name' del input (ej: 'nombre', 'apellido')
+  //     // 'value' será el texto que el usuario escribió
+  //     clienteDatos[key] = value;
+  //     console.log(`Clave: ${key}, Valor: ${value}`);
+  //   }
 
-    datosReservas.forEach((reserva) => {
-      console.log("feacha a iso:", toISODate(reserva[1]));
-      const reservaCompleta = {
-        numeroHabitacion: reserva[0],
-        fechaInicio: toISODate(reserva[1]),
-        fechaFin: toISODate(reserva[2]),
-        nombre: clienteDatos['nombre'],
-        apellido: clienteDatos['apellido'],
-        telefono: clienteDatos['telefono']
-      };
-      arrayReservas.push(reservaCompleta);
-    });
-    console.log("Reservas a enviar al servidor:", arrayReservas);
-    enviarReservasAlServidor(arrayReservas);
-  });
+  //   datosReservas.forEach((reserva) => {
+  //     console.log("feacha a iso:", toISODate(reserva[1]));
+  //     const reservaCompleta = {
+  //       numeroHabitacion: reserva[0],
+  //       fechaInicio: toISODate(reserva[1]),
+  //       fechaFin: toISODate(reserva[2]),
+  //       nombre: clienteDatos['nombre'],
+  //       apellido: clienteDatos['apellido'],
+  //       telefono: clienteDatos['telefono']
+  //     };
+  //     arrayReservas.push(reservaCompleta);
+  //   });
+  //   console.log("Reservas a enviar al servidor:", arrayReservas);
+  //   enviarReservasAlServidor(arrayReservas);
+  // });
 
   // Modal del Cliente
   const modalCliente = document.getElementById("modal-cliente");
 
-  if (botonReservar) {
-    botonReservar.addEventListener("click", function () {
+  // if (botonReservar) {
+  //   botonReservar.addEventListener("click", function () {
 
-      if (datosReservas.length === 0) {
-        alert("No ha seleccionado ninguna reserva.");
-        return;
-      }
+  //     if (datosReservas.length === 0) {
+  //       alert("No ha seleccionado ninguna reserva.");
+  //       return;
+  //     }
 
-      // --- 1. LLENAR MODAL DE RESUMEN ---
-      modalBodyResumen.innerHTML = '';
-      modalFooterResumen.innerHTML = '';
+  //     // --- 1. LLENAR MODAL DE RESUMEN ---
+  //     modalBodyResumen.innerHTML = '';
+  //     modalFooterResumen.innerHTML = '';
 
-      // Llenar el cuerpo con los detalles de las reservas
-      datosReservas.forEach(function (reserva, index) {
-        const [habitacionId, fechaInicio, fechaFin] = reserva;
-        const reservaDiv = document.createElement("div");
+  //     // Llenar el cuerpo con los detalles de las reservas
+  //     datosReservas.forEach(function (reserva, index) {
+  //       const [habitacionId, fechaInicio, fechaFin] = reserva;
+  //       const reservaDiv = document.createElement("div");
 
-        reservaDiv.classList.add("p-2", "border-start", "border-3", "border-info", "mb-2", "bg-light");
+  //       reservaDiv.classList.add("p-2", "border-start", "border-3", "border-info", "mb-2", "bg-light");
 
-        reservaDiv.innerHTML = `
-                <p class="mb-0"><strong>Reserva ${index + 1}:</strong> Habitación Nro ${habitacionId}</p>
-                <small class="text-muted">Fechas: ${fechaInicio} al ${fechaFin}</small>
-            `;
+  //       reservaDiv.innerHTML = `
+  //               <p class="mb-0"><strong>Reserva ${index + 1}:</strong> Habitación Nro ${habitacionId}</p>
+  //               <small class="text-muted">Fechas: ${fechaInicio} al ${fechaFin}</small>
+  //           `;
 
-        modalBodyResumen.appendChild(reservaDiv);
-      });
+  //       modalBodyResumen.appendChild(reservaDiv);
+  //     });
 
-      // --- 2. CONFIGURAR FOOTER DEL MODAL DE RESUMEN ---
+  //     // --- 2. CONFIGURAR FOOTER DEL MODAL DE RESUMEN ---
 
-      // Botón de CERRAR (Cancelar la acción)
-      const botonCerrar = document.createElement("button");
-      botonCerrar.textContent = "Cancelar";
-      botonCerrar.classList.add("btn", "btn-secondary");
-      botonCerrar.setAttribute("data-bs-dismiss", "modal");
+  //     // Botón de CERRAR (Cancelar la acción)
+  //     const botonCerrar = document.createElement("button");
+  //     botonCerrar.textContent = "Cancelar";
+  //     botonCerrar.classList.add("btn", "btn-secondary");
+  //     botonCerrar.setAttribute("data-bs-dismiss", "modal");
 
-      // Botón de CONFIRMAR (Avanzar al siguiente modal)
-      const botonConfirmar = document.createElement("button");
-      botonConfirmar.textContent = "Confirmar y Continuar ➡️";
-      botonConfirmar.classList.add("btn", "btn-primary");
-      botonConfirmar.type = "button"; // No es un submit
+  //     // Botón de CONFIRMAR (Avanzar al siguiente modal)
+  //     const botonConfirmar = document.createElement("button");
+  //     botonConfirmar.textContent = "Confirmar y Continuar ➡️";
+  //     botonConfirmar.classList.add("btn", "btn-primary");
+  //     botonConfirmar.type = "button"; // No es un submit
 
-      // AÑADIR EL EVENTO PARA MOSTRAR EL SEGUNDO MODAL
-      botonConfirmar.addEventListener("click", function () {
-        // Ocultar el modal de resumen
-        const bsModalResumen = bootstrap.Modal.getInstance(modalResumen);
-        if (bsModalResumen) {
-          bsModalResumen.hide();
-        } else {
-          new bootstrap.Modal(modalResumen).hide();
-        }
+  //     // AÑADIR EL EVENTO PARA MOSTRAR EL SEGUNDO MODAL
+  //     botonConfirmar.addEventListener("click", function () {
+  //       // Ocultar el modal de resumen
+  //       const bsModalResumen = bootstrap.Modal.getInstance(modalResumen);
+  //       if (bsModalResumen) {
+  //         bsModalResumen.hide();
+  //       } else {
+  //         new bootstrap.Modal(modalResumen).hide();
+  //       }
 
-        // Mostrar el modal del cliente
-        const bsModalCliente = new bootstrap.Modal(modalCliente);
-        bsModalCliente.show();
+  //       // Mostrar el modal del cliente
+  //       const bsModalCliente = new bootstrap.Modal(modalCliente);
+  //       bsModalCliente.show();
 
-      });
+  //     });
 
-      modalFooterResumen.appendChild(botonCerrar);
-      modalFooterResumen.appendChild(botonConfirmar);
+  //     modalFooterResumen.appendChild(botonCerrar);
+  //     modalFooterResumen.appendChild(botonConfirmar);
 
-      // --- 3. MOSTRAR EL PRIMER MODAL (RESUMEN) ---
-      const bsModalResumen = new bootstrap.Modal(modalResumen);
-      bsModalResumen.show();
+  //     // --- 3. MOSTRAR EL PRIMER MODAL (RESUMEN) ---
+  //     const bsModalResumen = new bootstrap.Modal(modalResumen);
+  //     bsModalResumen.show();
 
-    });
-  }
+  //   });
+  // }
 });
 
-function enviarReservasAlServidor(arrayReservas) {
-  const reservasJSON = JSON.stringify(arrayReservas);
-  fetch('/habitaciones/reservar', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: reservasJSON
-  })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
+// function enviarReservasAlServidor(arrayReservas) {
+//   const reservasJSON = JSON.stringify(arrayReservas);
+//   fetch('/habitaciones/reservar', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: reservasJSON
+//   })
+//     .then(response => {
+//       if (response.ok) {
+//         return response.json();
+//       } else {
 
-       return response.text().then(text => {
-                // Si el texto es HTML, aquí lo capturaremos.
-                console.error("Respuesta de error no JSON del servidor:", text);
+//        return response.text().then(text => {
+//                 // Si el texto es HTML, aquí lo capturaremos.
+//                 console.error("Respuesta de error no JSON del servidor:", text);
                 
-                // Lanzar un error para ir al bloque .catch
-                throw new Error(`Error ${response.status}: El servidor devolvió una página de error (HTML).`);
-            });
-      }
-    })
-    .then(data => {
-      console.log('Reservas confirmadas:', data);
-      // Aquí puedes manejar la respuesta del servidor, como mostrar un mensaje de éxito
-      alert("Reservas confirmadas con éxito.");
-      window.location.href = "/";
-    })
-    .catch(error => {
-      console.error('Error al confirmar las reservas:', error);
-      alert("Hubo un error al confirmar las reservas. Por favor, inténtelo de nuevo.");
-    });
-}
+//                 // Lanzar un error para ir al bloque .catch
+//                 throw new Error(`Error ${response.status}: El servidor devolvió una página de error (HTML).`);
+//             });
+//       }
+//     })
+//     .then(data => {
+//       console.log('Reservas confirmadas:', data);
+//       // Aquí puedes manejar la respuesta del servidor, como mostrar un mensaje de éxito
+//       alert("Reservas confirmadas con éxito.");
+//       window.location.href = "/";
+//     })
+//     .catch(error => {
+//       console.error('Error al confirmar las reservas:', error);
+//       alert("Hubo un error al confirmar las reservas. Por favor, inténtelo de nuevo.");
+//     });
+// }
