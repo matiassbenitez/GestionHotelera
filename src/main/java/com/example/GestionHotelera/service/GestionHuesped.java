@@ -121,4 +121,8 @@ public class GestionHuesped {
     return huespedDAOImpl.findById(id).orElse(null);
   }
 
+  public Huesped guardarHuesped(Huesped huesped) {
+    return huespedDAOImpl.save(huesped);
+  }
+
 }

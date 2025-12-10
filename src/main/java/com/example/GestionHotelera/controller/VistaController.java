@@ -26,6 +26,8 @@ import com.example.GestionHotelera.model.Habitacion;
 import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 
 @Controller
@@ -234,17 +236,24 @@ public class VistaController {
 
     @PostMapping("huesped/buscarOcupantes")
     @ResponseBody
-    public String procesarOcuparHabitacion(Model model,
-      @RequestBody Long idHuesped,
-      @RequestBody Integer numeroHabitacion,
-      @RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
-      @RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
+    public Map<String, String> procesarOcuparHabitacion(Model model,
+      @RequestParam Long idHuesped,
+      @RequestParam Integer numeroHabitacion,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
         
         Huesped huesped = gestionHuesped.buscarPorId(idHuesped);
+        System.out.println("huesped seleccionado: " + huesped.getNombre() + " " + huesped.getApellido());
         Habitacion habitacion = gestionHabitacion.buscarPorNumero(numeroHabitacion);
+        System.out.println("habitacion a ocupar: " + habitacion.getNumero());
         huesped.setHabitacion(habitacion);
-        return "redirect:/huesped/buscarOcupantes?preguntar=true&numeroHabitacion=" + numeroHabitacion + "&fechaInicio=" + fechaInicio + "&fechaFin=" + fechaFin;
-      
+        gestionHuesped.guardarHuesped(huesped);
+        System.out.println("habitacion asignada al huesped: " + huesped.getHabitacion().getNumero());
+        String urlDestino = "/huesped/buscarOcupantes?preguntar=true&numeroHabitacion=" + numeroHabitacion + "&fechaInicio=" + fechaInicio + "&fechaFin=" + fechaFin;
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("redirectUrl", urlDestino);
+        return response;
       }
 
     @PostMapping("/habitacion/cambiarEstado")
@@ -279,12 +288,12 @@ public class VistaController {
       return "layout";
     }
 
-  @GetMapping("/habitacion/ocupar")
-  public String mostrarOcuparHabitacion(Model model) {
-    model.addAttribute("tipos", TipoHabitacion.values());
-    model.addAttribute("title", "Ocupar Habitacion");
-    model.addAttribute("viewName", "ocuparHabitacion");
-    return "layout";}
+  // @GetMapping("/habitacion/ocupar")
+  // public String mostrarOcuparHabitacion(Model model) {
+  //   model.addAttribute("tipos", TipoHabitacion.values());
+  //   model.addAttribute("title", "Ocupar Habitacion");
+  //   model.addAttribute("viewName", "ocuparHabitacion");
+  //   return "layout";}
 
     
   

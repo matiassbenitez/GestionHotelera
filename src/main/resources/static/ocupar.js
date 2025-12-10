@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const queryString = window.location.search; 
   const urlParams = new URLSearchParams(queryString);
   const botonAceptar = document.getElementById("btn-aceptar");
+  const bsModalAcciones = new bootstrap.Modal(acciones);
 
   const nroHabitacion = urlParams.get('numeroHabitacion');
   const fechaInicio = urlParams.get('fechaInicio');
@@ -47,11 +48,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   });
 
-  let preguntar = document.getElementById("url").getAttribute("preguntar");
-  preguntar = preguntar === 'true' ? true : false;
+  let preguntar = urlParams.get('preguntar');
+  console.log("Valor original de preguntar:", preguntar);
+  preguntar = preguntar == 'true' ? true : false;
+  console.log("Valor de preguntar:", preguntar);
   if (preguntar) {
-    acciones.show();
+    bsModalAcciones.show();
   }
+  console.log(bsModalAcciones);
   const listado = document.getElementById("listado-huespedes");
   const listaHuespedes = listado.querySelector('ul');
   let selectedHuesped = null;
@@ -61,8 +65,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!selectedHuesped) {
         selectedHuesped = event.target.closest("li");
         selectedHuesped.classList.add("selectedHuesped");
+        console.log(selectedHuesped.firstElementChild.textContent);
         } else {
-          console.log(selectedHuesped.firstElementChild.textContent);
           selectedHuesped.classList.remove("selectedHuesped");
           selectedHuesped = null;
         }
@@ -71,19 +75,24 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   botonAceptar.addEventListener("click", function () {
     if (selectedHuesped) {
-      const idHuesped = selectedHuesped.getAttribute("data-id-huesped");
-      const ocuparUrl = `/huesped/ocuparHabitacion?idHuesped=${idHuesped}&numeroHabitacion=${nroHabitacion}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
-      fetch(ocuparUrl, {
-        method: 'POST'
-      })
-      .then(response => {
-        if (!response.ok) {
-          console.error('Error al ocupar la habitación');
-        }
-      })
-      .catch(error => {
-        console.error('Error en la solicitud:', error);
-      });
+      console.log("Huésped seleccionado:", selectedHuesped);
+      const idHuesped = selectedHuesped.firstElementChild.textContent.trim();
+      console.log("ID Huésped:", idHuesped);
+      const cargaOtraUrl = `/huesped/buscarOcupantes?idHuesped=${idHuesped}&numeroHabitacion=${nroHabitacion}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+    fetch(cargaOtraUrl, {
+      method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success' && data.redirectUrl) {
+        console.log('Redirigiendo a:', data.redirectUrl);
+        window.location.href = data.redirectUrl;
+      } else {
+        console.error('Error al ocupar la habitación');
+      }
+    }) .catch(error => {
+      console.error('Error en la solicitud:', error);
+    });
     }
   });
 });
