@@ -93,7 +93,7 @@ input:focus {
 }
 
 .seleccion-reserva, .seleccion-ocupa {
-    background-color: rgb(228, 95, 33);
+    background-color: rgb(255, 81, 0);
 }
 
 .selectedHuesped {

@@ -1,8 +1,25 @@
-<div th:fragment="page-content">
-  <h1>Hola index</h1>
-  <a class="btn btn-primary" href="/huesped/crear">Dar de Alta Huesped</a>
-  <a class="btn btn-primary" href="/habitaciones/reservar">Reservar habitación</a>
-  <a class="btn btn-primary" href="/huesped/buscar">Buscar Huesped</a>
-  <a class="btn btn-primary" href="/habitacion/ocupar">Ocupar Habitación</a>
-</div>
+<div th:fragment="page-content" class="mt-5">
 
+  <h1 class="text-center mb-5">Menu Principal</h1>
+
+  <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-4">
+
+    <a class="btn btn-primary btn-lg px-5 py-3" href="/huesped/crear">
+      Dar de Alta Huesped
+    </a>
+
+    <a class="btn btn-primary btn-lg px-5 py-3" href="/habitaciones/reservar">
+      Reservar Habitación
+    </a>
+
+    <a class="btn btn-primary btn-lg px-5 py-3" href="/huesped/buscar">
+      Buscar Huesped
+    </a>
+
+    <a class="btn btn-primary btn-lg px-5 py-3" href="/habitacion/ocupar">
+      Ocupar Habitación
+    </a>
+
+  </div>
+
+</div>

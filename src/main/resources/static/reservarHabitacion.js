@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Botón de CONFIRMAR (Avanzar al siguiente modal)
       const botonConfirmar = document.createElement("button");
-      botonConfirmar.textContent = "Confirmar y Continuar ➡️";
+      botonConfirmar.textContent = "ACEPTAR";
       botonConfirmar.classList.add("btn", "btn-primary");
       botonConfirmar.type = "button"; // No es un submit
 
@@ -212,8 +212,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       });
 
-      modalFooterResumen.appendChild(botonCerrar);
       modalFooterResumen.appendChild(botonConfirmar);
+      modalFooterResumen.appendChild(botonCerrar);
 
       // --- 3. MOSTRAR EL PRIMER MODAL (RESUMEN) ---
       const bsModalResumen = new bootstrap.Modal(modalResumen);
