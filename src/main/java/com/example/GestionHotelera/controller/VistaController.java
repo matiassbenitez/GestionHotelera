@@ -269,13 +269,14 @@ public class VistaController {
         Habitacion habitacion = gestionHabitacion.buscarPorNumero(numeroHabitacion);
         gestionEstado.crearEstadoOcupado(habitacion, fechaInicio, fechaFin);
         if (salir){
+          System.out.println("Salir y volver al home");
           model.addAttribute("title", "Gestión Hotelera - Home");
           model.addAttribute("viewName", "index");
-          return "layout";
+          return "redirect:/";
         } else {
           model.addAttribute("title", "Ocupar Habitacion");
           model.addAttribute("viewName", "ocuparHabitacion");
-          return "layout";
+          return "redirect:/habitaciones/ocupar";
         }
       }
       
