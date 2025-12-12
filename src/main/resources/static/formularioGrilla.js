@@ -4,6 +4,10 @@ function actualizarDatos() {
   const tipoHabitacion = document.getElementById("tipo").value;
 
   if (fechaInicio && fechaFin && tipoHabitacion) {
+    if (fechaInicio > fechaFin) {
+      alert("La fecha de inicio no puede ser posterior a la fecha de fin.");
+      return;
+    }
     const ruta = document.getElementById("ruta").textContent;
     window.location.href = `/habitaciones/${ruta}?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&tipo=${tipoHabitacion}`;
   }

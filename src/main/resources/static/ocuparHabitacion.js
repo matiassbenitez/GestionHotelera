@@ -122,8 +122,8 @@ document.addEventListener("DOMContentLoaded", function () {
           inputOcultoValor = inputOculto1
           if (inputOculto1.value != inputOculto2.value) { // Habitaciones diferentes
             contador = 0;
-            seleccionado1.classList.remove("seleccion-reserva");
-            seleccionado2.classList.remove("seleccion-reserva");
+            seleccionado1.classList.remove("seleccion-ocupa");
+            seleccionado2.classList.remove("seleccion-ocupa");
             seleccionados = [];
             alert("No puede seleccionar dos habitaciones diferentes.");
           } else { //Habitaciones iguales
