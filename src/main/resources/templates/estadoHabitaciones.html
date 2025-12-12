@@ -1,34 +1,37 @@
 <div th:fragment="content">
-  <!-- <script src="/eventosTabla.js"></script> -->
-    <table id="tabla-estados" border="1" cellpadding="5" cellspacing="0">
+
+  <!-- CONTENEDOR CON SCROLL VERTICAL -->
+  <div class="tabla-wrapper">
+
+    <table id="tabla-estados" cellpadding="5" cellspacing="0">
 
       <thead>
         <tr>
           <th>Fecha</th>
 
           <th th:if="${mostrarTabla}"
-            th:each="habId : ${tablaEstados[0].estadosPorHabitacion.keySet()}"
-            th:text="'Hab ' + ${habId}">
+              th:each="habId : ${tablaEstados[0].estadosPorHabitacion.keySet()}"
+              th:text="'Hab ' + ${habId}">
           </th>
         </tr>
       </thead>
 
       <tbody>
-
         <tr th:each="fila : ${tablaEstados}">
-
           <td th:text="${#temporals.format(fila.fecha, 'dd/MM/yyyy')}"></td>
 
-          <td 
-          th:each="entry : ${fila.estadosPorHabitacion.entrySet()}"
-          class="estado-cuadro" 
-          th:classappend="${#strings.isEmpty(entry.value) ? 'DISPONIBLE' : entry.value}">
-          <input type="hidden" th:value="${entry.key}" th:name="${'estado_' + entry.key}"/>
+          <td th:each="entry : ${fila.estadosPorHabitacion.entrySet()}"
+              class="estado-cuadro"
+              th:classappend="${#strings.isEmpty(entry.value) ? 'DISPONIBLE' : entry.value}">
+            <input type="hidden"
+                   th:value="${entry.key}"
+                   th:name="${'estado_' + entry.key}"/>
           </td>
-
         </tr>
-
       </tbody>
 
     </table>
+
+  </div>
+
 </div>
