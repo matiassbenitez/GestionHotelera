@@ -11,30 +11,47 @@ import com.example.GestionHotelera.DTO.TablaEstadoDTO;
 import com.example.GestionHotelera.model.Estado;
 import com.example.GestionHotelera.model.EstadoEnum;
 import com.example.GestionHotelera.model.Habitacion;
+import com.example.GestionHotelera.model.TipoHabitacion;
 import com.example.GestionHotelera.repository.EstadoDAO;
+import com.example.GestionHotelera.service.GestionHabitacion;
 
 @Service
 public class GestionEstado {
   private final EstadoDAO estadoDAOImpl;
-  public GestionEstado(EstadoDAO estadoDAOImpl) {
+  private final GestionHabitacion gestionHabitacion;
+  public GestionEstado(EstadoDAO estadoDAOImpl, GestionHabitacion gestionHabitacion) {
     this.estadoDAOImpl = estadoDAOImpl;
+    this.gestionHabitacion = gestionHabitacion;
   }
-  public void crearEstado(Habitacion habitacion, LocalDate fechaInicio, LocalDate fechaFin) {
+
+
+  public void crearEstadoReservada(Integer nroHabitacion, LocalDate fechaInicio, LocalDate fechaFin) {
+
+    
+
     Estado nuevoEstado = new Estado();
+
+    Habitacion habitacion = gestionHabitacion.buscarPorNumero(nroHabitacion);
     nuevoEstado.setHabitacion(habitacion);
+    
     nuevoEstado.setFechaInicio(fechaInicio);
     nuevoEstado.setFechaFin(fechaFin);
     nuevoEstado.setEstado(EstadoEnum.RESERVADA);
     estadoDAOImpl.save(nuevoEstado);
+
   }
 
   public List<Estado> obtenerEstadosPorFecha(LocalDate fechaInicio, LocalDate fechaFin) {
     //System.out.println("GestionEstado - obtenerEstadosPorFecha: " + fechaInicio + " / " + fechaFin);
     return estadoDAOImpl.findByFechaInicioLessThanEqualAndFechaFinGreaterThanEqualAndEliminadoFalse(fechaInicio, fechaFin);
   }
-  public List<TablaEstadoDTO> generarTablaEstados(LocalDate fechaInicio, LocalDate fechaFin, List<Habitacion> habitaciones) {
+
+
+  public List<TablaEstadoDTO> generarTablaEstados(LocalDate fechaInicio, LocalDate fechaFin, TipoHabitacion tipoHabitacion) {
     List<TablaEstadoDTO> tablaEstados = new ArrayList<>();
     List<Integer> nroHabitaciones = new ArrayList<>();
+    List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(tipoHabitacion);
+
     habitaciones.forEach(h -> nroHabitaciones.add(h.getNumero()));
     for (LocalDate fecha = fechaInicio; !fecha.isAfter(fechaFin); fecha=fecha.plusDays(1)) {
       List<Estado> estadosDelDia = obtenerEstadosPorFecha(fecha, fecha);

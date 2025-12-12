@@ -90,6 +90,9 @@ public class VistaController {
     model.addAttribute("viewName", "estadoHabitaciones");
     return "layout";}
 
+
+
+
   @GetMapping("/habitaciones/reservar")
   public String mostrarReservarHabitacion(Model model,
     @RequestParam(required = false) LocalDate fechaInicio,
@@ -103,8 +106,12 @@ public class VistaController {
     List<TablaEstadoDTO> tablaEstados = new ArrayList<>();
     if (buscar) {
       System.out.println(fechaInicio);
-      List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(TipoHabitacion.valueOf(tipo));
-      tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, habitaciones);
+      //List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(TipoHabitacion.valueOf(tipo));
+      //tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, habitaciones);
+      //Las 2 lineas de arriba son codigo viejo
+
+      tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, TipoHabitacion.valueOf(tipo));
+     
       System.out.println(fechaFin);
       System.out.println(tablaEstados.get(0).getEstadosPorHabitacion());
       model.addAttribute("mostrarTabla", buscar);
@@ -115,15 +122,26 @@ public class VistaController {
     model.addAttribute("fechaFinSeleccionada", fechaFin);
     return "layout";}
     
+
+
+
+
     @PostMapping("/habitaciones/reservar")
     @ResponseBody
     public ResponseEntity<?> procesarReservaHabitacion(Model model,
       @RequestBody List<datosParaReservaDTO> datosReserva) {
         try{
           for (datosParaReservaDTO datos : datosReserva) {
-            Habitacion habitacion = gestionHabitacion.buscarPorNumero(datos.getNumeroHabitacion());
-            gestionReserva.reservar(datos,habitacion);
-            gestionEstado.crearEstado(habitacion, datos.getFechaInicio(), datos.getFechaFin());
+
+            //gestionReserva
+
+            gestionReserva.reservar(datos);
+            
+            gestionEstado.crearEstadoReservada(datos.getNumeroHabitacion(), datos.getFechaInicio(), datos.getFechaFin());
+
+            //gestionEstado.crearEstado(habitacion, datos.getFechaInicio(), datos.getFechaFin());
+
+
           }
           return ResponseEntity.ok().body(java.util.Collections.singletonMap("message", "Reservas procesadas con éxito."));
           // model.addAttribute("title", "Gestión Hotelera - Home");
@@ -136,16 +154,31 @@ public class VistaController {
         }
       }
     
+
+      
+      
       @GetMapping("/habitaciones/infoReserva")
       @ResponseBody
       public List<datosParaReservaDTO> obtenerInfoReserva(
         @RequestParam String numeroHabitacion,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio) {
-          Habitacion habitacion = gestionHabitacion.buscarPorNumero(Integer.parseInt(numeroHabitacion));
-          List<datosParaReservaDTO> infoReserva = gestionReserva.obtenerInfoReserva(habitacion, fechaFin, fechaInicio);
+
+          List<datosParaReservaDTO> infoReserva = gestionReserva.obtenerInfoReserva(Integer.parseInt(numeroHabitacion), fechaInicio, fechaFin);
+
+          //Habitacion habitacion = gestionHabitacion.buscarPorNumero(Integer.parseInt(numeroHabitacion));
+          //List<datosParaReservaDTO> infoReserva = gestionReserva.obtenerInfoReserva(habitacion, fechaFin, fechaInicio);
+          //Estas 2 lineas son de codigo viejo
+
+
           return infoReserva;
       }
+
+
+
+
+
+
 
       @GetMapping("/habitaciones/ocupar")
   public String mostrarOcuparHabitacion(Model model,
@@ -160,8 +193,12 @@ public class VistaController {
     List<TablaEstadoDTO> tablaEstados = new ArrayList<>();
     if (buscar) {
       System.out.println(fechaInicio);
-      List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(TipoHabitacion.valueOf(tipo));
-      tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, habitaciones);
+      
+      //List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(TipoHabitacion.valueOf(tipo));
+      //tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, habitaciones);
+     
+      tablaEstados = gestionEstado.generarTablaEstados(fechaInicio, fechaFin, TipoHabitacion.valueOf(tipo));
+     
       System.out.println(fechaFin);
       System.out.println(tablaEstados.get(0).getEstadosPorHabitacion());
       model.addAttribute("mostrarTabla", buscar);
@@ -180,7 +217,7 @@ public class VistaController {
     @RequestParam(required = false) String dni,
     @RequestParam(required = false) String buscar,
     Model model) {
-    List<Huesped> resultados = new ArrayList<>();
+    List<HuespedDTO> resultados = new ArrayList<>();
     boolean busquedaRealizada = (buscar != null && buscar.equals("true"));
     if (busquedaRealizada) {
       resultados = gestionHuesped.buscarHuespedesPorCriterios(apellido, nombre, tipo, dni);
@@ -201,6 +238,11 @@ public class VistaController {
     model.addAttribute("viewName", "buscarHuesped");
     return "layout";}
 
+
+
+
+
+
     @GetMapping("/huesped/buscarOcupantes")
   public String mostrarBuscarOcupantes(
     @RequestParam(required = false) Boolean preguntar,
@@ -213,7 +255,7 @@ public class VistaController {
     @RequestParam(required = false) String dni,
     @RequestParam(required = false) String buscar,
     Model model) {
-    List<Huesped> resultados = new ArrayList<>();
+    List<HuespedDTO> resultados = new ArrayList<>();
     boolean busquedaRealizada = (buscar != null && buscar.equals("true"));
     if (busquedaRealizada) {
       resultados = gestionHuesped.buscarHuespedesPorCriterios(apellido, nombre, tipo, dni);
@@ -234,6 +276,11 @@ public class VistaController {
     model.addAttribute("viewName", "buscarOcupantes");
     return "layout";}
 
+
+
+
+
+
     @PostMapping("huesped/buscarOcupantes")
     @ResponseBody
     public Map<String, String> procesarOcuparHabitacion(Model model,
@@ -242,19 +289,31 @@ public class VistaController {
       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin) {
         
-        Huesped huesped = gestionHuesped.buscarPorId(idHuesped);
-        System.out.println("huesped seleccionado: " + huesped.getNombre() + " " + huesped.getApellido());
-        Habitacion habitacion = gestionHabitacion.buscarPorNumero(numeroHabitacion);
-        System.out.println("habitacion a ocupar: " + habitacion.getNumero());
-        huesped.setHabitacion(habitacion);
-        gestionHuesped.guardarHuesped(huesped);
-        System.out.println("habitacion asignada al huesped: " + huesped.getHabitacion().getNumero());
+
+        gestionHabitacion.procesarOcuparHabitacion(idHuesped,numeroHabitacion,fechaInicio,fechaFin);
+
+
+        //Huesped huesped = gestionHuesped.buscarPorId(idHuesped);
+        //System.out.println("huesped seleccionado: " + huesped.getNombre() + " " + huesped.getApellido());
+        //Habitacion habitacion = gestionHabitacion.buscarPorNumero(numeroHabitacion);
+        //System.out.println("habitacion a ocupar: " + habitacion.getNumero());
+        //huesped.setHabitacion(habitacion);
+        //gestionHuesped.guardarHuesped(huesped);
+        //System.out.println("habitacion asignada al huesped: " + huesped.getHabitacion().getNumero());
+
+        //Las lineas que estan arriba de esta son de codigo viejo.
+        
         String urlDestino = "/huesped/buscarOcupantes?preguntar=true&numeroHabitacion=" + numeroHabitacion + "&fechaInicio=" + fechaInicio + "&fechaFin=" + fechaFin;
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
         response.put("redirectUrl", urlDestino);
         return response;
       }
+
+
+
+
+
 
     @PostMapping("/habitacion/cambiarEstado")
     public String guardarEstadoHabitacion(Model model,
@@ -266,8 +325,13 @@ public class VistaController {
       @RequestParam(required = false) boolean salir)
       {
       if (cargarOtro || salir){
-        Habitacion habitacion = gestionHabitacion.buscarPorNumero(numeroHabitacion);
-        gestionEstado.crearEstadoOcupado(habitacion, fechaInicio, fechaFin);
+
+        gestionHabitacion.guardarEstadoHabitacion(numeroHabitacion, fechaInicio, fechaFin);
+
+        //Habitacion habitacion = gestionHabitacion.buscarPorNumero(numeroHabitacion);
+        //gestionEstado.crearEstadoOcupado(habitacion, fechaInicio, fechaFin);
+
+
         if (salir){
           model.addAttribute("title", "Gestión Hotelera - Home");
           model.addAttribute("viewName", "index");

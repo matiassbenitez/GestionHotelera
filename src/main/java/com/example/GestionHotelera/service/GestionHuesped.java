@@ -104,26 +104,40 @@ public class GestionHuesped {
     return huespedRetorno;
   }
 
-  public List<Huesped> buscarHuespedesPorCriterios(String apellido, String nombre, String tipoDocumento, String nroDocumento) {
-    
+  public List<HuespedDTO> buscarHuespedesPorCriterios(
+        String apellido,
+        String nombre,
+        String tipoDocumento,
+        String nroDocumento) {
+
     Specification<Huesped> spec = Specification.not(null);
+
     if (apellido != null && !apellido.isEmpty()) {
-      spec = spec.and(HuespedSpecification.apellidoStartsWith(apellido.trim()));
+        spec = spec.and(HuespedSpecification.apellidoStartsWith(apellido.trim()));
     }
     if (nombre != null && !nombre.isEmpty()) {
-      spec = spec.and(HuespedSpecification.nombreStartsWith(nombre.trim()));
+        spec = spec.and(HuespedSpecification.nombreStartsWith(nombre.trim()));
     }
     if (tipoDocumento != null && !tipoDocumento.trim().isEmpty()) {
-      spec = spec.and(HuespedSpecification.hasTipoDocumento(tipoDocumento.trim()));
+        spec = spec.and(HuespedSpecification.hasTipoDocumento(tipoDocumento.trim()));
     }
     if (nroDocumento != null && !nroDocumento.trim().isEmpty()) {
-      spec = spec.and(HuespedSpecification.hasNroDocumento(nroDocumento.trim()));
+        spec = spec.and(HuespedSpecification.hasNroDocumento(nroDocumento.trim()));
     }
-    return huespedDAOImpl.findAll(spec);
-  }
+
+    
+    List<Huesped> entidades = huespedDAOImpl.findAll(spec);
+
+    
+    return entidades.stream()
+                    .map(this::mapperToDTO)
+                    .toList();
+}
 
   public Huesped buscarPorId(Long id) {
+
     return huespedDAOImpl.findById(id).orElse(null);
+
   }
 
   public Huesped guardarHuesped(Huesped huesped) {
