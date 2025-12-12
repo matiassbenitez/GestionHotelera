@@ -65,7 +65,7 @@ public class VistaController {
     Model model,
     @RequestParam(defaultValue = "false") boolean forzar, 
     RedirectAttributes redirectAttributes) {
-    Optional<Huesped> huespedEncontrado = gestionHuesped.buscarPorNroDocumentoAndTipoDocumento(nuevoHuespedDTO.getNroDocumento(), nuevoHuespedDTO.getTipoDocumento());
+    Optional<HuespedDTO> huespedEncontrado = gestionHuesped.buscarPorNroDocumentoAndTipoDocumento(nuevoHuespedDTO.getNroDocumento(), nuevoHuespedDTO.getTipoDocumento());
     if (!forzar){
       if (huespedEncontrado.isPresent()) {
         model.addAttribute("error", "¡CUIDADO! El tipo y número de documento ya existen en el sistema.");
