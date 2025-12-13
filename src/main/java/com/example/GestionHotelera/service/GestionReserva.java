@@ -12,19 +12,18 @@ public class GestionReserva {
   ReservaDAO reservaDAOImpl;
   private final GestionHabitacion gestionHabitacion;
   private final GestionEstado gestionEstado;
-  private final GestionReserva gestionReserva;
+ 
   
-  public GestionReserva(ReservaDAO reservaDAOImpl, GestionEstado gestionEstado, GestionHabitacion gestionHabitacion, GestionReserva gestionReserva) {
+  public GestionReserva(ReservaDAO reservaDAOImpl, GestionEstado gestionEstado, GestionHabitacion gestionHabitacion) {
     this.reservaDAOImpl = reservaDAOImpl;
     this.gestionHabitacion = gestionHabitacion;
     this.gestionEstado = gestionEstado;
-    this.gestionReserva = gestionReserva;
   }
 
   public List<datosParaReservaDTO> obtenerInfoReserva (Integer nroHabitacion,LocalDate fechaInicio, LocalDate fechaFin){
 
    Habitacion habitacion = gestionHabitacion.buscarPorNumero(nroHabitacion);
-   List<datosParaReservaDTO> infoReserva = gestionReserva.obtenerInfoReserva(habitacion, fechaFin, fechaInicio);
+   List<datosParaReservaDTO> infoReserva = obtenerInfoReserva(habitacion, fechaFin, fechaInicio);
 
 
 

@@ -35,11 +35,29 @@ public class GestionHuesped {
     return huespedDAOImpl.findAll();
   }
 
+  /* 
   public Optional<HuespedDTO> buscarPorNroDocumentoAndTipoDocumento(String nroDocumento, String tipoDocumento) {
     return huespedDAOImpl
             .findByNroDocumentoAndTipoDocumento(nroDocumento, tipoDocumento)
             .map(this::mapperToDTO);
 }
+*/
+
+public boolean existeHuespedConDocumento(String nroDocumento, String tipoDocumento) {
+    return huespedDAOImpl
+            .existsByNroDocumentoAndTipoDocumento(nroDocumento, tipoDocumento);
+}
+
+
+
+
+
+
+
+
+
+
+
 
   public HuespedDTO darDeAltaHuesped(HuespedDTO nuevoHuespedDTO) {
    

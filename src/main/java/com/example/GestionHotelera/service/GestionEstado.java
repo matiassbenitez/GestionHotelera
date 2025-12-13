@@ -13,15 +13,17 @@ import com.example.GestionHotelera.model.EstadoEnum;
 import com.example.GestionHotelera.model.Habitacion;
 import com.example.GestionHotelera.model.TipoHabitacion;
 import com.example.GestionHotelera.repository.EstadoDAO;
-import com.example.GestionHotelera.service.GestionHabitacion;
+import com.example.GestionHotelera.repository.HabitacionDAO;
+
 
 @Service
 public class GestionEstado {
   private final EstadoDAO estadoDAOImpl;
-  private final GestionHabitacion gestionHabitacion;
-  public GestionEstado(EstadoDAO estadoDAOImpl, GestionHabitacion gestionHabitacion) {
+  private final HabitacionDAO habitacionDAOImpl;
+  
+  public GestionEstado(EstadoDAO estadoDAOImpl, HabitacionDAO habitacionDAOImpl) {
     this.estadoDAOImpl = estadoDAOImpl;
-    this.gestionHabitacion = gestionHabitacion;
+    this.habitacionDAOImpl = habitacionDAOImpl;
   }
 
 
@@ -29,9 +31,12 @@ public class GestionEstado {
 
     
 
+    
+
     Estado nuevoEstado = new Estado();
 
-    Habitacion habitacion = gestionHabitacion.buscarPorNumero(nroHabitacion);
+    //Habitacion habitacion = gestionHabitacion.buscarPorNumero(nroHabitacion);
+    Habitacion habitacion = habitacionDAOImpl.findByNumero(nroHabitacion);
     nuevoEstado.setHabitacion(habitacion);
     
     nuevoEstado.setFechaInicio(fechaInicio);
@@ -50,9 +55,22 @@ public class GestionEstado {
   public List<TablaEstadoDTO> generarTablaEstados(LocalDate fechaInicio, LocalDate fechaFin, TipoHabitacion tipoHabitacion) {
     List<TablaEstadoDTO> tablaEstados = new ArrayList<>();
     List<Integer> nroHabitaciones = new ArrayList<>();
-    List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(tipoHabitacion);
+    //List<Habitacion> habitaciones = gestionHabitacion.obtenerHabitacionesPorTipo(tipoHabitacion);
+    List<Habitacion> habitaciones = habitacionDAOImpl.findByTipo(tipoHabitacion);
 
-    habitaciones.forEach(h -> nroHabitaciones.add(h.getNumero()));
+    System.out.println("Tipo recibido: " + tipoHabitacion);
+  System.out.println("Habitaciones encontradas: " + habitaciones.size());
+  habitaciones.forEach(h ->
+    System.out.println("Habitación nro: " + h.getNumero() + " - Tipo: " + h.getTipo())
+);
+
+
+
+     habitaciones.forEach(h -> nroHabitaciones.add(h.getNumero()));
+
+     System.out.println("NroHabitaciones tamaño:" + nroHabitaciones.size());
+
+
     for (LocalDate fecha = fechaInicio; !fecha.isAfter(fechaFin); fecha=fecha.plusDays(1)) {
       List<Estado> estadosDelDia = obtenerEstadosPorFecha(fecha, fecha);
       System.out.println("Fecha: " + fecha + " - Estados encontrados: " + estadosDelDia.size());

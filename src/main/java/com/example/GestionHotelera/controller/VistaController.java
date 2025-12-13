@@ -15,16 +15,14 @@ import java.time.LocalDate;
 import com.example.GestionHotelera.DTO.HuespedDTO;
 import com.example.GestionHotelera.DTO.TablaEstadoDTO;
 import com.example.GestionHotelera.DTO.datosParaReservaDTO;
-import com.example.GestionHotelera.model.Huesped;
 import com.example.GestionHotelera.service.GestionHuesped;
 import com.example.GestionHotelera.service.GestionEstado;
 import com.example.GestionHotelera.service.GestionHabitacion;
 import com.example.GestionHotelera.service.GestionReserva;
 import com.example.GestionHotelera.model.TipoHabitacion;
-import com.example.GestionHotelera.model.Habitacion;
 
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -65,9 +63,11 @@ public class VistaController {
     Model model,
     @RequestParam(defaultValue = "false") boolean forzar, 
     RedirectAttributes redirectAttributes) {
-    Optional<HuespedDTO> huespedEncontrado = gestionHuesped.buscarPorNroDocumentoAndTipoDocumento(nuevoHuespedDTO.getNroDocumento(), nuevoHuespedDTO.getTipoDocumento());
+    //Optional<HuespedDTO> huespedEncontrado = gestionHuesped.buscarPorNroDocumentoAndTipoDocumento(nuevoHuespedDTO.getNroDocumento(), nuevoHuespedDTO.getTipoDocumento());
+    Boolean documentoRepetido = gestionHuesped.existeHuespedConDocumento(nuevoHuespedDTO.getNroDocumento(), nuevoHuespedDTO.getTipoDocumento());
+    
     if (!forzar){
-      if (huespedEncontrado.isPresent()) {
+      if (documentoRepetido == true) {
         model.addAttribute("error", "¡CUIDADO! El tipo y número de documento ya existen en el sistema.");
         model.addAttribute("title", "Dar de alta Huesped");
         model.addAttribute("nuevoHuespedDTO", nuevoHuespedDTO);

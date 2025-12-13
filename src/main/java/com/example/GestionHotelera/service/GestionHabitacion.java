@@ -19,7 +19,7 @@ public class GestionHabitacion {
   private final GestionHuesped gestionHuesped;
   private final GestionEstado gestionEstado;
 
-  public GestionHabitacion(HabitacionDAO habitacionDAOImpl, EstadoDAO estadoDAOImpl, GestionHabitacion gestionHabitacion, GestionHuesped gestionHuesped, GestionEstado gestionEstado) {
+  public GestionHabitacion(HabitacionDAO habitacionDAOImpl, GestionHuesped gestionHuesped, GestionEstado gestionEstado) {
     this.habitacionDAOImpl = habitacionDAOImpl;
     this.gestionHuesped = gestionHuesped;
     this.gestionEstado = gestionEstado;
