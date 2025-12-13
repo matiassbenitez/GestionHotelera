@@ -2,7 +2,7 @@
     <script src="/formularioGrilla.js"></script>
     <script src="/ocuparHabitacion.js"></script>
     <div id="ruta" hidden>ocupar</div>
-    <div class="container my-5 p-4 border rounded shadow-lg bg-white">
+    
         <h1 class="mb-4 text-center text-primary border-bottom pb-2">
             Ocupar Habitaciones
         </h1>
@@ -60,6 +60,26 @@
 
         <div th:if="${mostrarTabla}" class="mt-4">
             <div th:replace="estadoHabitaciones :: content"></div>
+        </div>
+        <div class="leyenda-estados">
+        <div class="leyenda-item">
+            <span class="estado-cuadro OCUPADA"></span>
+            <span>Ocupada</span>
+        </div>
+
+        <div class="leyenda-item">
+            <span class="estado-cuadro RESERVADA"></span>
+            <span>Reservada</span>
+        </div>
+
+        <div class="leyenda-item">
+            <span class="estado-cuadro LIBRE"></span>
+            <span>Libre</span>
+        </div>
+
+        <div class="leyenda-item">
+            <span class="estado-cuadro FUERA_DE_SERVICIO"></span>
+            <span>Fuera de servicio</span>
         </div>
     </div>
 
@@ -142,4 +162,4 @@
             </div>
         </div>
     </div>
-</div>
+

@@ -139,7 +139,7 @@ input:focus {
 /* Contenedor de la tabla (tabla-wrapper) */
 .tabla-wrapper {
     max-width: 100vw;        /* Usa todo el ancho de la pantalla */
-    max-height: calc(100vh - 60px);  /* Usa toda la altura menos un poco para los botones */
+    max-height: 50vh;  /* Usa toda la altura menos un poco para los botones */
     overflow-x: auto;        /* Activa el scroll horizontal solo si es necesario */
     overflow-y: auto;        /* Activa el scroll vertical solo si es necesario */
     margin: 0;               /* Elimina márgenes en los bordes */
@@ -181,4 +181,27 @@ input:focus {
     left: 0;
     background-color: #f4f4f4;
     z-index: 2;
+}
+
+/* LEYENDA DE ESTADOS */
+.leyenda-estados {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+/* Reutiliza los mismos cuadrados */
+.leyenda-item .estado-cuadro {
+    width: 18px;
+    height: 18px;
 }

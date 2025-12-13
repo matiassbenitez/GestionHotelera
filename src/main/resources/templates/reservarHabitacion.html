@@ -3,8 +3,7 @@
     <script src="/formularioGrilla.js" ></script>
     <script src="/reservarHabitacion.js"></script>
     <div id="ruta" hidden >reservar</div>
-    <div class="container my-5 p-4 border rounded shadow-lg bg-white"> 
-        
+          
         <h1 class="mb-4 text-center text-primary border-bottom pb-2">Reservar Habitaciones</h1>
         
         <form class="row g-3 align-items-end mb-4">
@@ -41,10 +40,31 @@
             <div th:replace="estadoHabitaciones :: content" ></div>
         </div>
         
+        <div class="leyenda-estados">
+        <div class="leyenda-item">
+            <span class="estado-cuadro OCUPADA"></span>
+            <span>Ocupada</span>
+        </div>
+
+        <div class="leyenda-item">
+            <span class="estado-cuadro RESERVADA"></span>
+            <span>Reservada</span>
+        </div>
+
+        <div class="leyenda-item">
+            <span class="estado-cuadro LIBRE"></span>
+            <span>Libre</span>
+        </div>
+
+        <div class="leyenda-item">
+            <span class="estado-cuadro FUERA_DE_SERVICIO"></span>
+            <span>Fuera de servicio</span>
+        </div>
+    </div>
         <div class="d-grid gap-2 col-6 mx-auto mt-5"> 
             <button id="boton-reservar" class="btn btn-primary btn-lg shadow-sm">Reservar</button>
         </div>
-    </div>
+    
     
     ---
 
