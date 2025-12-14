@@ -171,7 +171,7 @@ public boolean existeHuespedConDocumento(String nroDocumento, String tipoDocumen
 
         HuespedDTO dto = new HuespedDTO();
 
-        
+        dto.setId(huesped.getId());
         dto.setNombre(huesped.getNombre());
         dto.setApellido(huesped.getApellido());
         dto.setTipoDocumento(huesped.getTipoDocumento());

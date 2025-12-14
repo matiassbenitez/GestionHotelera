@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data && data.length > 0) {
                   data.forEach(reserva => {
                     reservaInfo = `La habitación está reservada por ${reserva.nombre} ${reserva.apellido} desde el ${reserva.fechaInicio} hasta el ${reserva.fechaFin}. ¿Desea ocuparla igual?`;
-                    const modalBody = aviso.querySelector(".modal-body");
+                    const modalBody = modalOcuparIgual.querySelector(".modal-body");
                     modalBody.textContent = reservaInfo;
                   });
                 }
