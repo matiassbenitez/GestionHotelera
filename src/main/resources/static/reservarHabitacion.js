@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Botón de CONFIRMAR (Avanzar al siguiente modal)
       const botonConfirmar = document.createElement("button");
-      botonConfirmar.textContent = "Confirmar y Continuar ➡️";
+      botonConfirmar.textContent = "Aceptar";
       botonConfirmar.classList.add("btn", "btn-primary");
       botonConfirmar.type = "button"; // No es un submit
 

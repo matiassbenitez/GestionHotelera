@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface HuespedDAO extends JpaRepository<Huesped, Long>, JpaSpecificationExecutor<Huesped> {
-  Optional<Huesped> findByNroDocumentoAndTipoDocumento(String nroDocumento, String tipoDocumento);
+ // Optional<Huesped> findByNroDocumentoAndTipoDocumento(String nroDocumento, String tipoDocumento);
+  Boolean existsByNroDocumentoAndTipoDocumento(String nroDocumento, String tipoDocumento);
+
   // List<Huesped> findByApellidoStartingWithIgnoreCaseAndNombreStartingWithIgnoreCaseAndTipoDocumentoAndNroDocumento(
   //     String apellido, String nombre, String tipoDocumento, String nroDocumento);
   // List<Huesped> findByApellidoStartingWithIgnoreCaseAndNombreStartingWithIgnoreCaseAndTipoDocumento(

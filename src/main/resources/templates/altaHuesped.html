@@ -50,8 +50,7 @@
     </div>
   </div>
   
-  <div class="container my-5">
-    <div class="card shadow p-4 mx-auto" style="max-width: 1000px;">
+
       <h1 class="text-center mb-4" >INGRESAR DATOS DEL NUEVO HUESPED</h1>
       <form id="formulario" action="/huesped/crear" th:object="${nuevoHuespedDTO}" method="post" novalidate>
         <div class="row mb-3">
@@ -69,7 +68,7 @@
         <label for="fecha-nac">Fecha de nacimiento*</label>
         <input class="form-control" type="date" th:field="*{fechaNac}" name="fechaNac" id="fecha-nac" />
       </div>
-    </div>
+    
 
     <div class="row mb-3">
       <div class="col-md-4">
@@ -195,8 +194,7 @@
   </form>
   <ul id="errores"></ul>
   <ul id="error-formato"></ul>
-    </div>
-  </div>
+    
   <script th:if="${error}">
     let form = document.getElementById("formulario");
     const modalError = document.getElementById("modal-error");

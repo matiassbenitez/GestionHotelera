@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const modalSeguro = document.getElementById('modal-seguro');
   const modalError = document.getElementById('modal-error');
   const modalSuccess = document.getElementById('modal-success');
-  
+
   cancelar.addEventListener('click', function () {
     modalSeguro.style.display = 'block';
     const buttonCancelarSi = document.getElementById('button-cancelar-si');
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const errores = document.getElementById('errores');
       errores.innerHTML = '';
       modalSeguro.style.display = 'none';
-      
+
     }
     );
     const buttonCancelarNo = document.getElementById('button-cancelar-no');
@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const codigoPostal = document.getElementById('codigo-postal');
     const localidad = document.getElementById('localidad');
     const telefono = document.getElementById('telefono');
+    const email = document.getElementById('email');
     const ocupacion = document.getElementById('ocupacion');
     const nacionalidad = document.getElementById('nacionalidad');
     const posicionIva = document.getElementById('posicion-iva');
@@ -43,15 +44,30 @@ document.addEventListener('DOMContentLoaded', function () {
     const errorFormato = document.getElementById('error-formato');
     let hayError = false;
     errores.innerHTML = '';
-    
+    errorFormato.innerHTML = '';
+
+    const reGexTexto = /^[A-Za-zÀ-ÿ\s]+$/;
+    const reGexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
     if (!apellido.value.trim()) {
       const faltaApellido = document.createElement('li');
       faltaApellido.textContent = 'El campo Apellido es obligatorio.';
       errores.appendChild(faltaApellido);
-      apellido.focus();
-      apellido.classList.add('campo-error')
-      hayError = true;
+      if (!hayError) {
+        apellido.focus();
+        apellido.classList.add('campo-error')
+        hayError = true;
+      }
+    } else if (!reGexTexto.test(apellido.value.trim())) {
+      const formatoApellido = document.createElement('li');
+      formatoApellido.textContent = 'El campo Apellido debe contener solo letras y espacios.';
+      errorFormato.appendChild(formatoApellido);
+      if (!hayError) {
+        apellido.focus();
+        apellido.classList.add('campo-error');
+        hayError = true;
+      }
     } else {
       apellido.classList.remove('campo-error');
     }
@@ -79,15 +95,15 @@ document.addEventListener('DOMContentLoaded', function () {
         hayError = true;
       }
     } else if (!reGexFecha.test(fechaNac.value)) {
-        const formatoFechaNac = document.createElement('li');
-        formatoFechaNac.textContent = 'El campo Fecha de Nacimiento debe tener el formato AAAA-MM-DD.';
-        errorFormato.appendChild(formatoFechaNac); 
-        if (!hayError) {
-          fechaNac.focus();
-          fechaNac.classList.add('campo-error');
-          hayError = true;
-        }
-  } else {
+      const formatoFechaNac = document.createElement('li');
+      formatoFechaNac.textContent = 'El campo Fecha de Nacimiento debe tener el formato AAAA-MM-DD.';
+      errorFormato.appendChild(formatoFechaNac);
+      if (!hayError) {
+        fechaNac.focus();
+        fechaNac.classList.add('campo-error');
+        hayError = true;
+      }
+    } else {
       fechaNac.classList.remove('campo-error');
     }
     const reGexNroDoc = /^\d+$/;
@@ -102,18 +118,17 @@ document.addEventListener('DOMContentLoaded', function () {
         hayError = true;
       }
     } else if (!reGexNroDoc.test(nroDoc.value.trim())) {
-        const formatoNroDoc = document.createElement('li');
-        formatoNroDoc.textContent = 'El campo Número de Documento debe contener solo números.';
-        errorFormato.appendChild(formatoNroDoc);
-        if (!hayError) {
-          nroDoc.focus();
-          nroDoc.classList.add('campo-error');
-          hayError = true;
-        }
+      const formatoNroDoc = document.createElement('li');
+      formatoNroDoc.textContent = 'El campo Número de Documento debe contener solo números.';
+      errorFormato.appendChild(formatoNroDoc);
+      if (!hayError) {
+        nroDoc.focus();
+        nroDoc.classList.add('campo-error');
+        hayError = true;
+      }
     } else {
       nroDoc.classList.remove('campo-error');
     }
-    const reGexTexto = /^[A-Za-zÀ-ÿ\s]+$/;
     if (!nacionalidad.value.trim()) {
       const faltaNacionalidad = document.createElement('li');
       faltaNacionalidad.textContent = 'El campo Nacionalidad es obligatorio.';
@@ -124,15 +139,15 @@ document.addEventListener('DOMContentLoaded', function () {
         hayError = true;
       }
     } else if (!reGexTexto.test(nacionalidad.value.trim())) {
-        const formatoNacionalidad = document.createElement('li');
-        formatoNacionalidad.textContent = 'El campo Nacionalidad debe contener solo letras y espacios.';
-        errorFormato.appendChild(formatoNacionalidad);
-        if (!hayError) {
-          nacionalidad.focus();
-          nacionalidad.classList.add('campo-error');
-          hayError = true;
-        }
-  } else {
+      const formatoNacionalidad = document.createElement('li');
+      formatoNacionalidad.textContent = 'El campo Nacionalidad debe contener solo letras y espacios.';
+      errorFormato.appendChild(formatoNacionalidad);
+      if (!hayError) {
+        nacionalidad.focus();
+        nacionalidad.classList.add('campo-error');
+        hayError = true;
+      }
+    } else {
       nacionalidad.classList.remove('campo-error');
     }
     if (!calle.value.trim()) {
@@ -145,15 +160,15 @@ document.addEventListener('DOMContentLoaded', function () {
         hayError = true;
       }
     } else if (!reGexTexto.test(calle.value.trim())) {
-        const formatoCalle = document.createElement('li');
-        formatoCalle.textContent = 'El campo Calle debe contener solo letras y espacios.';
-        errorFormato.appendChild(formatoCalle);
-        if (!hayError) {
-          calle.focus();
-          calle.classList.add('campo-error');
-          hayError = true;
-        }
-  } else {
+      const formatoCalle = document.createElement('li');
+      formatoCalle.textContent = 'El campo Calle debe contener solo letras y espacios.';
+      errorFormato.appendChild(formatoCalle);
+      if (!hayError) {
+        calle.focus();
+        calle.classList.add('campo-error');
+        hayError = true;
+      }
+    } else {
       calle.classList.remove('campo-error');
     }
     if (!numero.value.trim()) {
@@ -227,16 +242,30 @@ document.addEventListener('DOMContentLoaded', function () {
         hayError = true;
       }
     } else if (!reGexTelefono.test(telefono.value.trim())) {
-        const formatoTelefono = document.createElement('li');
-        formatoTelefono.textContent = 'El campo Teléfono debe contener solo números.';
-        errorFormato.appendChild(formatoTelefono);
+      const formatoTelefono = document.createElement('li');
+      formatoTelefono.textContent = 'El campo Teléfono debe contener solo números.';
+      errorFormato.appendChild(formatoTelefono);
+      if (!hayError) {
+        telefono.focus();
+        telefono.classList.add('campo-error');
+        hayError = true;
+      }
+    } else {
+      telefono.classList.remove('campo-error');
+    }
+    if (email.value.trim()) {
+      if (!reGexEmail.test(email.value.trim())) {
+        const formatoEmail = document.createElement('li');
+        formatoEmail.textContent = 'El campo Email debe tener un formato válido.';
+        errorFormato.appendChild(formatoEmail);
         if (!hayError) {
-          telefono.focus();
-          telefono.classList.add('campo-error');
+          email.focus();
+          email.classList.add('campo-error');
           hayError = true;
         }
-  } else {
-      telefono.classList.remove('campo-error');
+      } else {
+        email.classList.remove('campo-error');
+      }
     }
     if (!ocupacion.value.trim()) {
       const faltaOcupacion = document.createElement('li');

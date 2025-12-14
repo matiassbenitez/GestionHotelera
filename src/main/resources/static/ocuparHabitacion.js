@@ -21,6 +21,15 @@ function parseDate(dateString) {
   return new Date(parts[2], parts[1] - 1, parts[0]);
 }
 
+
+document.querySelectorAll('.modal').forEach(modalElement => {
+  modalElement.addEventListener('hide.bs.modal', function () {
+    if (document.activeElement) {
+      document.activeElement.blur();
+    }
+  });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   const modalOcuparIgual = document.getElementById("modal-confirmacion-ocupa");
   const aviso = document.getElementById("aviso");
@@ -29,21 +38,50 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalAviso = document.getElementById("aviso");
   const bsModalAviso = new bootstrap.Modal(modalAviso);
   
+  
   let inputOcultoValor = ''
   let fechaInicioSeleccionada = '';
   let fechaFinSeleccionada = '';
-
+  
+  function finalizaSeleccion(fechasDesordenadas, inputOculto1, firstTd1, firstTd2, indiceColumna, filas, inicio, fin, permiteSeleccionar) {
+    if (permiteSeleccionar) {
+      console.log("Selección permitida");
+      for (let i = ++inicio; i < fin; i++) {
+        const celda = filas[i].cells[indiceColumna];
+        celda.classList.add("seleccion-ocupa");
+      }
+      let fechaInicial = ''
+      let fechaFinal = ''
+      if (fechasDesordenadas) {
+        fechaInicial = firstTd2.textContent.trim('');
+        fechaFinal = firstTd1.textContent.trim('');
+      } else {
+        fechaInicial = firstTd1.textContent.trim('');
+        fechaFinal = firstTd2.textContent.trim('');
+      }
+      fechaInicioSeleccionada = fechaInicial
+      fechaFinSeleccionada = fechaFinal
+      inputOcultoValor = inputOculto1.value;
+      console.log("Fechas seleccionadas:", fechaInicioSeleccionada, "a", fechaFinSeleccionada);
+      console.log("Número de habitación seleccionada:", inputOcultoValor);
+      bsModalAviso.show();
+      //datosReservas.push(reserva);  // CARGAR DATOS DE PERSONA PARA LA RESERVA, HACER FOR Y CREAR LA LISTA DE OBJETOS
+      // console.log("Datos de reservas:", datosReservas);
+      seleccionados = [];
+      contador = 0;
+    }
+  }
   //const botonReservar = document.getElementById("boton-reservar");
   let contador = 0;
   let seleccionados = [];
   //let arrayReservas = [];
   //let datosReservas = [];
-  
+
   // modalAviso.addEventListener('hidden.bs.modal', function () {
   //   const reserva = [inputOcultoValor, fechaInicioSeleccionada, fechaFinSeleccionada];
   //   console.log("fechas:" + fechaInicioSeleccionada + " - " + fechaFinSeleccionada);
   // });
-  
+
   document.addEventListener('keydown', function (event) {
     const modalVisible = modalAviso.classList.contains('show');
     if (modalVisible) {
@@ -84,8 +122,8 @@ document.addEventListener("DOMContentLoaded", function () {
           inputOcultoValor = inputOculto1
           if (inputOculto1.value != inputOculto2.value) { // Habitaciones diferentes
             contador = 0;
-            seleccionado1.classList.remove("seleccion-reserva");
-            seleccionado2.classList.remove("seleccion-reserva");
+            seleccionado1.classList.remove("seleccion-ocupa");
+            seleccionado2.classList.remove("seleccion-ocupa");
             seleccionados = [];
             alert("No puede seleccionar dos habitaciones diferentes.");
           } else { //Habitaciones iguales
@@ -150,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data && data.length > 0) {
                   data.forEach(reserva => {
                     reservaInfo = `La habitación está reservada por ${reserva.nombre} ${reserva.apellido} desde el ${reserva.fechaInicio} hasta el ${reserva.fechaFin}. ¿Desea ocuparla igual?`;
-                    const modalBody = aviso.querySelector(".modal-body");
+                    const modalBody = modalOcuparIgual.querySelector(".modal-body");
                     modalBody.textContent = reservaInfo;
                   });
                 }
@@ -158,9 +196,18 @@ document.addEventListener("DOMContentLoaded", function () {
               const bsModalOcuparIgual = new bootstrap.Modal(modalOcuparIgual);
               bsModalOcuparIgual.show();
               botonOcuparIgual.addEventListener("click", function () {
-                bsModalOcuparIgual.hide();
+                console.log("Ocupar igual confirmado");
+                if (document.activeElement) {
+                  document.activeElement.blur();
+                }
+                console.log("luego de blur")
                 permiteSeleccionar = true;
+                console.log("permiteSeleccionar:", permiteSeleccionar)
+                bsModalOcuparIgual.hide();
+                finalizaSeleccion(fechasDesordenadas, inputOculto1, firstTd1, firstTd2, indiceColumna, filas, inicio, fin, permiteSeleccionar);
+                console.log("luego de hide")
               });
+              console.log("antes de botonVolver")
               botonVolver.addEventListener("click", function () {
                 contador = 0;
                 seleccionado1.classList.remove("seleccion-ocupa");
@@ -168,29 +215,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 seleccionados = [];
                 bsModalOcuparIgual.hide();
               });
-            }
-            if (permiteSeleccionar) {
-              for (let i = ++inicio; i < fin; i++) {
-                const celda = filas[i].cells[indiceColumna];
-                celda.classList.add("seleccion-ocupa");
-              }
-              let fechaInicial = ''
-              let fechaFinal = ''
-              if (fechasDesordenadas) {
-                fechaInicial = firstTd2.textContent.trim('');
-                fechaFinal = firstTd1.textContent.trim('');
-              } else {
-                fechaInicial = firstTd1.textContent.trim('');
-                fechaFinal = firstTd2.textContent.trim('');
-              }
-              fechaInicioSeleccionada = fechaInicial
-              fechaFinSeleccionada = fechaFinal
-              inputOcultoValor = inputOculto1.value;
-              bsModalAviso.show();
-              //datosReservas.push(reserva);  // CARGAR DATOS DE PERSONA PARA LA RESERVA, HACER FOR Y CREAR LA LISTA DE OBJETOS
-              // console.log("Datos de reservas:", datosReservas);
-              seleccionados = [];
-              contador = 0;
+              console.log("despues de botonVolver")
+            } else {
+              finalizaSeleccion(fechasDesordenadas, inputOculto1, firstTd1, firstTd2, indiceColumna, filas, inicio, fin, permiteSeleccionar);
             }
           }
         }

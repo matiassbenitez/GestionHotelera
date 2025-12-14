@@ -12,11 +12,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const fechaInicio = urlParams.get('fechaInicio');
   const fechaFin = urlParams.get('fechaFin');
 
+const myModal = document.querySelector('.modal');
+if (myModal) {
+  myModal.addEventListener('hide.bs.modal', function () {
+    if (document.activeElement) {
+      document.activeElement.blur();
+    }
+  });
+}
+
   botonSeguir.addEventListener("click", function () {
-    acciones.hide();
+    bsModalAcciones.hide();
   });
   botonCargarOtra.addEventListener("click", function () {
-    acciones.hide();
+    
     const cargaOtraUrl = `/habitacion/cambiarEstado?numeroHabitacion=${nroHabitacion}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&cargarOtro=true`;
     fetch(cargaOtraUrl, {
       method: 'POST'
@@ -25,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!response.ok) {
         console.error('Error al cambiar el estado de la habitación');
       }
+       window.location.href = "/habitaciones/ocupar";
     })
     .catch(error => {
       console.error('Error en la solicitud:', error);
@@ -32,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   });
   botonSalir.addEventListener("click", function () {
-    acciones.hide();
+    
     const ocuparUrl = `/habitacion/cambiarEstado?numeroHabitacion=${nroHabitacion}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&salir=true`;
     fetch(ocuparUrl, {
       method: 'POST'
@@ -41,6 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!response.ok) {
         console.error('Error al cambiar el estado de la habitación');
       }
+       window.location.href = "/";
     })
     .catch(error => {
       console.error('Error en la solicitud:', error);
