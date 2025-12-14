@@ -35,11 +35,31 @@ public class GestionHuesped {
     return huespedDAOImpl.findAll();
   }
 
-  public Optional<Huesped> buscarPorNroDocumentoAndTipoDocumento(String nroDocumento, String tipoDocumento) {
-    return huespedDAOImpl.findByNroDocumentoAndTipoDocumento(nroDocumento, tipoDocumento);
-  }
+  /* 
+  public Optional<HuespedDTO> buscarPorNroDocumentoAndTipoDocumento(String nroDocumento, String tipoDocumento) {
+    return huespedDAOImpl
+            .findByNroDocumentoAndTipoDocumento(nroDocumento, tipoDocumento)
+            .map(this::mapperToDTO);
+}
+*/
 
-  public Huesped darDeAltaHuesped(HuespedDTO nuevoHuespedDTO) {
+public boolean existeHuespedConDocumento(String nroDocumento, String tipoDocumento) {
+    return huespedDAOImpl
+            .existsByNroDocumentoAndTipoDocumento(nroDocumento, tipoDocumento);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+  public HuespedDTO darDeAltaHuesped(HuespedDTO nuevoHuespedDTO) {
    
     Huesped nuevoHuesped = new Huesped();
     nuevoHuesped.setNombre(nuevoHuespedDTO.getNombre());
@@ -96,33 +116,114 @@ public class GestionHuesped {
     nuevoHuesped.setContacto(contacto);
     nuevoHuesped.setUbicacion(ubicacion);
     
-    return huespedDAOImpl.save(nuevoHuesped);
+    nuevoHuesped = huespedDAOImpl.save(nuevoHuesped);
+    HuespedDTO huespedRetorno = mapperToDTO(nuevoHuesped);
+
+    return huespedRetorno;
   }
 
-  public List<Huesped> buscarHuespedesPorCriterios(String apellido, String nombre, String tipoDocumento, String nroDocumento) {
-    
+  public List<HuespedDTO> buscarHuespedesPorCriterios(
+        String apellido,
+        String nombre,
+        String tipoDocumento,
+        String nroDocumento) {
+
     Specification<Huesped> spec = Specification.not(null);
+
     if (apellido != null && !apellido.isEmpty()) {
-      spec = spec.and(HuespedSpecification.apellidoStartsWith(apellido.trim()));
+        spec = spec.and(HuespedSpecification.apellidoStartsWith(apellido.trim()));
     }
     if (nombre != null && !nombre.isEmpty()) {
-      spec = spec.and(HuespedSpecification.nombreStartsWith(nombre.trim()));
+        spec = spec.and(HuespedSpecification.nombreStartsWith(nombre.trim()));
     }
     if (tipoDocumento != null && !tipoDocumento.trim().isEmpty()) {
-      spec = spec.and(HuespedSpecification.hasTipoDocumento(tipoDocumento.trim()));
+        spec = spec.and(HuespedSpecification.hasTipoDocumento(tipoDocumento.trim()));
     }
     if (nroDocumento != null && !nroDocumento.trim().isEmpty()) {
-      spec = spec.and(HuespedSpecification.hasNroDocumento(nroDocumento.trim()));
+        spec = spec.and(HuespedSpecification.hasNroDocumento(nroDocumento.trim()));
     }
-    return huespedDAOImpl.findAll(spec);
-  }
+
+    
+    List<Huesped> entidades = huespedDAOImpl.findAll(spec);
+
+    
+    return entidades.stream()
+                    .map(this::mapperToDTO)
+                    .toList();
+}
 
   public Huesped buscarPorId(Long id) {
+
     return huespedDAOImpl.findById(id).orElse(null);
+
   }
 
   public Huesped guardarHuesped(Huesped huesped) {
+    
     return huespedDAOImpl.save(huesped);
   }
+
+
+    public HuespedDTO mapperToDTO(Huesped huesped) {
+        if (huesped == null) {
+            return null;
+        }
+
+        HuespedDTO dto = new HuespedDTO();
+
+        
+        dto.setNombre(huesped.getNombre());
+        dto.setApellido(huesped.getApellido());
+        dto.setTipoDocumento(huesped.getTipoDocumento());
+        dto.setNroDocumento(huesped.getNroDocumento());
+        dto.setFechaNac(huesped.getFechaNac());
+        dto.setNacionalidad(huesped.getNacionalidad());
+
+        
+        Direccion direccion = huesped.getDireccion();
+        if (direccion != null) {
+            dto.setCalle(direccion.getCalle());
+            dto.setNumero(direccion.getNumero());
+
+            
+            Departamento departamento = direccion.getDepartamento();
+            if (departamento != null) {
+                
+                dto.setDepartamento(departamento.getDepartamento());
+                dto.setPiso(departamento.getPiso());
+            } else {
+                 dto.setDepartamento(null);
+                 dto.setPiso(null);
+            }
+        }
+
+        
+        Ubicacion ubicacion = huesped.getUbicacion();
+        if (ubicacion != null) {
+            dto.setLocalidad(ubicacion.getLocalidad());
+            dto.setProvincia(ubicacion.getProvincia());
+            dto.setPais(ubicacion.getPais());
+            dto.setCodPostal(ubicacion.getCodPostal());
+            
+        }
+
+        
+        Contacto contacto = huesped.getContacto();
+        if (contacto != null) {
+            dto.setTelefono(contacto.getTelefono());
+            dto.setEmail(contacto.getEmail());
+        }
+
+        
+        PosicionFiscal posicionFiscal = huesped.getPosicionFiscal();
+        if (posicionFiscal != null) {
+            dto.setOcupacion(posicionFiscal.getOcupacion());
+            dto.setPosicionIva(posicionFiscal.getPosicionIVA());
+            dto.setCuit(posicionFiscal.getCuit());
+        }
+
+        return dto;
+    }
+
 
 }
